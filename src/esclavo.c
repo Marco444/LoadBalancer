@@ -2,13 +2,11 @@
 #include "include/esclavo.h"
 int main(int argC,char * argV[]){
 
-    if (argC == 0)
-    {
-        printf("Non path");
-    }
     char* ptr = (char*)malloc(MAXBUFFER);
     md5Calculate(ptr);
+   // printf(ptr);
     free(ptr);
+    int aux;
     return 0;
 }
 void md5Calculate(char * buffer){
@@ -28,6 +26,10 @@ void md5Calculate(char * buffer){
     }else{
         if(returnV == -1)
             perror("Fork error in md5");
+        else{
+            int status;
+            waitpid(returnV,&status,WUNTRACED | WCONTINUED);
+            }
         sprintf(buffer,"%ld ",(long)getpid());
         read(fd[0],buffer + strlen(buffer),MAXBUFFER);
         close(fd[0]);
