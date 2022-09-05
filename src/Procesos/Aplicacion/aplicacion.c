@@ -32,6 +32,8 @@ int main(int argc, char * argv[]){
     }
 
     slavesManager * manager = malloc(sizeof(slavesManager));
+    if (manager == NULL)
+        perror("Cant allocate mamory");
     manager ->pipes = createSlaves(argc-1);
     manager -> filesCount = argc-1;
     manager -> filesDone = 0;
@@ -40,9 +42,5 @@ int main(int argc, char * argv[]){
      
     
    }
-    
-    
-   
-
-   
 }
+

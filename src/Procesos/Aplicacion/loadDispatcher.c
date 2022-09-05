@@ -18,19 +18,19 @@ void createChild(char * file, int read_addr, int write_addr) {
     sprintf(read, "%d", read_addr);
     sprintf(write, "%d", write_addr);   // esto no hace falta
 
-    //define string to hold both fds
+    //define string to hold both fds -> Aca le debemos mandar los primeros archivos que debe desarrollar el slave
     char * fds[] = {read, write};
     char * childArgs[]={file, (char *) fds, NULL};
 
     execv(file, childArgs);
 }
 
-sComunication * createSlaves(int slaveCount)
+slaves * createSlaves(int slaveCount)
 {
-    sComunication * slavesPipes = malloc(sizeof(sComunication));
+    slaves * slavesPipes = malloc(sizeof(slaves));
     slavesPipes -> readFD = malloc(sizeof(int) * slaveCount);
     slavesPipes -> writeFD = malloc(sizeof(int) * slaveCount);
-
+    slavesPipes -> slavesIds = malloc(sizeof(int));
     for (int i = 0; i < slaveCount; ++i) {
 
         //definimos el channelA para que el padre escriba y el hijo lea
@@ -55,7 +55,8 @@ sComunication * createSlaves(int slaveCount)
                 close(slavesPipes->readFD[j]);  
                 close(slavesPipes->writeFD[j]);
             }
-            
+            // Guardo los pipes para que luego poder hacer el waite cuando terminen
+            slavesPipes -> slavesIds[i] = pid;
             createChild("./esclavo.out", channelA[0], channelB[1]);
 
         } else {
@@ -70,8 +71,9 @@ sComunication * createSlaves(int slaveCount)
 
     return slavesPipes;
 }
-void secureFree(sComunication * freeElement){
+void secureFreeSlave(slaves * freeElement){
     free(freeElement ->readFD);
     free(freeElement -> writeFD);
+    free(freeElement->slavesIds);
     free(freeElement);
 }
