@@ -2,8 +2,8 @@
 // Created by Marco Scilipoti on 04/09/2022.
 //
 
-#include "queue.h"
-#include "lib.h"
+#include "../include/queue.h"
+#include "../../../test/lib.h"
 
 
 Queue * initQueue() {
