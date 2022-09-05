@@ -4,17 +4,17 @@ int main(int argC,char * argV[]){
 
     char* ptr = (char*)malloc(MAXBUFFER);
     md5Calculate(ptr);
-   // printf(ptr);
+    printf(ptr);
     free(ptr);
-    int aux;
     return 0;
 }
 void md5Calculate(char * buffer){
     int fd[2];
     int returnV;
-    if(pipe(fd) < 0)
+    if(pipe(fd) < 0){
+        free(buffer);
         perror("Error to calculate md5");
-
+        }
     if ((returnV = fork()) == 0)
     {
         close(fd[0]);

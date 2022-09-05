@@ -16,28 +16,31 @@ void createChild(char * file, int read_addr, int write_addr) {
     //define two strings to store parent_child_c of pipe
     char read[20], write[20];
     sprintf(read, "%d", read_addr);
-    sprintf(write, "%d", write_addr);
+    sprintf(write, "%d", write_addr);   // esto no hace falta
 
     //define string to hold both fds
     char * fds[] = {read, write};
-    char * childArgs[]={"./EXEC", (char *) fds, NULL};
+    char * childArgs[]={file, (char *) fds, NULL};
 
     execv(file, childArgs);
 }
 
-Slave * createSlaves(int slaveCount)
+sComunication * createSlaves(int slaveCount)
 {
-    Slave * slaves = malloc(slaveCount * sizeof(Slave));
+    sComunication * slavesPipes = malloc(sizeof(sComunication));
+    slavesPipes -> readFD = malloc(sizeof(int) * slaveCount);
+    slavesPipes -> writeFD = malloc(sizeof(int) * slaveCount);
 
     for (int i = 0; i < slaveCount; ++i) {
 
         //definimos el channelA para que el padre escriba y el hijo lea
         int channelA[2];
-        pipe(channelA);
-
         //definimos le channelB para que el padre lea y el hijo escriba
         int channelB[2];
-        pipe(channelB);
+        if(pipe(channelA) == -1 ||  pipe(channelB) == -1){
+            secureFree(slavesPipes);
+            perror("Creation pipe error");
+        }
 
         pid_t pid;
 
@@ -46,19 +49,29 @@ Slave * createSlaves(int slaveCount)
             close(channelA[1]); //cerrar la escritura porque solo leo
             close(channelB[0]); //cerrar la lectura porque solo escribo
 
-            createChild("./EXEC", channelA[0], channelB[1]);
+            // En este for lo que hacemos es cerrar los fds creados por los demas slaves
+            for (int j = 0; j < i; j++)
+            {
+                close(slavesPipes->readFD[j]);  
+                close(slavesPipes->writeFD[j]);
+            }
+            
+            createChild("./esclavo.out", channelA[0], channelB[1]);
 
         } else {
-            wait(&pid);
-
             close(channelA[0]); //cerrar la lectura porque solo escribo channel A
             close(channelB[1]); //cerrar la escritura porque solo leo channel B
 
-            slaves[i]->read_address = channelB[0];
-            slaves[i]->write_address = channelA[0];
+            slavesPipes->readFD[i] = channelB[0];
+            slavesPipes->writeFD[i] = channelA[0];
         }
 
     }
 
-    return slaves;
+    return slavesPipes;
+}
+void secureFree(sComunication * freeElement){
+    free(freeElement ->readFD);
+    free(freeElement -> writeFD);
+    free(freeElement);
 }
