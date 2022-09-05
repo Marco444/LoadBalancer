@@ -28,7 +28,7 @@
 typedef struct slaves{
     int * readFD;
     int * writeFD;
-    int * slavesIds;
+   int * slavesIds;
 } slaves;
 
 
