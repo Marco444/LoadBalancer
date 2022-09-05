@@ -1,5 +1,6 @@
 
 #include "../../include/esclavo.h"
+
 int main(int argC,char * argV[]){
 
     char* ptr = (char*)malloc(MAXBUFFER);
@@ -8,6 +9,7 @@ int main(int argC,char * argV[]){
     free(ptr);
     return 0;
 }
+
 void md5Calculate(char * buffer){
     int fd[2];
     int returnV;

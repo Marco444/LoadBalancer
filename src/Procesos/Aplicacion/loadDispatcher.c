@@ -3,13 +3,10 @@
 //
 
 #include "../../include/loadDispatcher.h"
-#include "../../include/loadBalancer.h"
 #include<stdio.h>
 #include<unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
-
-
 
 void createChild(char * file, int read_addr, int write_addr) {
 
@@ -52,10 +49,10 @@ sComunication * createSlaves(int slaveCount)
             // En este for lo que hacemos es cerrar los fds creados por los demas slaves
             for (int j = 0; j < i; j++)
             {
-                close(slavesPipes->readFD[j]);  
+                close(slavesPipes->readFD[j]);
                 close(slavesPipes->writeFD[j]);
             }
-            
+
             createChild("./esclavo.out", channelA[0], channelB[1]);
 
         } else {
@@ -70,6 +67,7 @@ sComunication * createSlaves(int slaveCount)
 
     return slavesPipes;
 }
+
 void secureFree(sComunication * freeElement){
     free(freeElement ->readFD);
     free(freeElement -> writeFD);
