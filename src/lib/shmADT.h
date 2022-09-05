@@ -14,8 +14,14 @@ typedef struct shmCDT * shmADT;
 /*
 *   Creates a shared memory, and returns a handler for the shared memory and synchronization between processes
 */
-shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot);
+shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot);
 
+
+/*
+*   Opens a shared memory, that is already created
+*   and returns a handler for the shared memory and synchronization between processes
+*/
+shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot);
 /*
 *   Closes and frees the shared memory and sync resources.
 *   shmAdt -> handler
