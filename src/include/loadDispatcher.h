@@ -25,17 +25,19 @@
 //como mando una string dinamica como argumento de execv y dsp la libero????
 ///////////////////////////////////////////////////////////////////////////
 
-typedef struct sComunication{
+typedef struct slaves{
     int * readFD;
     int * writeFD;
-} sComunication;
+   int * slavesIds;
+} slaves;
 
 
 
 void createChild(char * file, int read_addr, int write_addr);
 
 
-sComunication * createSlaves(int slaveCount);
+slaves * createSlaves(int slaveCount);
 
-void secureFree(sComunication * freeElement);
+void secureFreeSlave(slaves * freeElement)
+
 #endif //TEST_LOADDISPATCHER_H

@@ -6,17 +6,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include <loadDispatcher.h>
-#include <slaveEngine.h>
+
+
 //
 // Created by Marco Scilipoti on 04/09/2022.
 //
 //
 // Created by Ippo on 04/09/2022.
 //
+
 int main(int argc, char * argv[]){
 
 
+
+    
      if(argc < 2){
         printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
     }
@@ -28,22 +31,6 @@ int main(int argc, char * argv[]){
 
         if(S_ISDIR(stats.st_mode))
             printf("Error! : %s is a directory\n", argv[i]);
-    }
-
-    slavesManager * manager = malloc(sizeof(slavesManager));
-    if (manager == NULL)
-        perror("Cant allocate mamory");
-    //TODO aca pongo esta varible pero esto me lo da lo que hizo scili
-    int slavesCount = 15;
-    manager->slaveCount = slavesCount;
-    manager ->pipes = createSlaves(slavesCount);
-    manager -> filesCount = argc-1;
-    manager -> filesDone = 0;
-    manager -> inSet = 0;
-    char message[MAXBUFFER];
-   while (manager->filesDone < manager -> filesCount)
-   {
-     getDone(manager,message);
-   }
+    } 
+   
 }
-
