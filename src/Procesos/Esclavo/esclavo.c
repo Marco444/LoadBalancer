@@ -1,5 +1,5 @@
 
-#include "include/esclavo.h"
+#include "../../include/esclavo.h"
 int main(int argC,char * argV[]){
 
     if (argC == 0)
