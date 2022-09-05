@@ -52,12 +52,8 @@ slaves * createSlaves(int slaveCount)
                 close(slavesPipes->readFD[j]);
                 close(slavesPipes->writeFD[j]);
             }
-<<<<<<< HEAD
             // Guardo los pipes para que luego poder hacer el waite cuando terminen
             slavesPipes -> slavesIds[i] = pid;
-=======
-
->>>>>>> e1d3e23997453033c42127f5adc925d2c0dd3b88
             createChild("./esclavo.out", channelA[0], channelB[1]);
 
         } else {
@@ -72,12 +68,7 @@ slaves * createSlaves(int slaveCount)
 
     return slavesPipes;
 }
-<<<<<<< HEAD
 void secureFreeSlave(slaves * freeElement){
-=======
-
-void secureFree(sComunication * freeElement){
->>>>>>> e1d3e23997453033c42127f5adc925d2c0dd3b88
     free(freeElement ->readFD);
     free(freeElement -> writeFD);
     free(freeElement->slavesIds);
