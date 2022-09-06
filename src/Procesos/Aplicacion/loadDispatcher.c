@@ -10,11 +10,11 @@
 
 void createChild(char * file, int read_addr, int write_addr) {
 
-    //define two strings to store parent_child_c of pipe
-    char read[MAX_INT_DIGITS], write[MAX_INT_DIGITS];
-    sprintf(read, "%d", read_addr);
-    sprintf(write, "%d", write_addr);   // esto no hace falta
-
+    // seteo de la entrada y salida entrada del proyecto esclavo
+    dup2(read_addr,0);
+    dup2(write_addr,1);
+    close(read_addr);
+    close(write_addr);
     //define string to hold both fds -> Aca le debemos mandar los primeros archivos que debe desarrollar el slave
     char * fds[] = {read, write};
     char * childArgs[]={file, (char *) fds, NULL};
