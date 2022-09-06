@@ -17,14 +17,13 @@ typedef struct shmCDT{
     const char * nameSHM;
     const char * nameSEM;
     char * address;
-    int pos;
+    int writePos;
+    int readPos;
     int sizeSHM;
     sem_t * sem;
     int creator;
     
 }shmCDT;
-
-
 
 shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot){
 
@@ -52,7 +51,8 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
     }
 
     shmAdt->address = mmap(NULL, shmSize, prot, MAP_SHARED, shm_fd, 0);
-    shmAdt->pos = 0;
+    shmAdt->readPos = 0;
+    shmAdt->writePos = 0;
 
     if(shmAdt->address == MAP_FAILED){
         perror("Error while initializing Shared Memory");
@@ -61,26 +61,26 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
 
 
     if(close(shm_fd)==-1){
-        //unlinkShm(shmv);
-        //freeShm(shm);
-        perror("Error closing file descriptor");
+        unlinkShm(shmAdt);
+        free(shmAdt);
+        perror("Error while closing file descriptor");
         exit();
     }
-
     
     // We create the samphore
     shmAdt->sem = sem_open(sem_name, oflags, mode, 0);
 
     if(shmAdt->sem == SEM_FAILED){
-        //unlinkShm(shm);
-        //freeShm(shm);
-        perror("Error creating semaphore");
+        unlinkShm(shmAdt);
+        free(shmAdt);
+        perror("Error while creating semaphore");
         exit();
     }
     shmAdt->creator = 1;
 
     return shmAdt;
 }
+
 
 shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot){
 
@@ -102,7 +102,8 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
     }
 
     shmAdt->address = mmap(NULL, shmSize, prot, MAP_SHARED, shm_fd, 0);
-    shmAdt->pos = 0;
+    shmAdt->readPos = 0;
+    shmAdt->writePos = 0;
 
     if(shmAdt->address == MAP_FAILED){
         perror("Error while initializing Shared Memory");
@@ -111,9 +112,9 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
 
     if(close(shm_fd)==-1){
-        //unlinkShm(shm);
-        //freeShm(shm);
-        perror("Error closing file descriptor");
+        unlinkShm(shmAdt);
+        free(shmAdt);
+        perror("Error while closing file descriptor");
         exit();
     }
 
@@ -121,9 +122,9 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
     // We open the samphore
     shmAdt->sem = sem_open(sem_name, 0);
     if(shmAdt->sem == SEM_FAILED){
-        //unlinkShm(shm);
-        //freeShm(shm);
-        perror("Error opening semaphore");
+        unlinkShm(shmAdt);
+        free(shmAdt);
+        perror("Error while opening semaphore");
         exit();
     }
     shmAdt->creator = 0;
@@ -158,32 +159,44 @@ void closeSHM(shmADT shmAdt){
     freeShm(shmAdt);
 }
    
+
 void writeSHM(shmADT shmAdt, char * buffer){
 
     if(shmAdt == NULL || buffer == NULL){
         perror("Invalid parameters for writeSHM");
     }
 
-    
-
-    for(int i = 0; buffer[i] != '\0'; i++, (shmAdt->pos)++){
+    for(int i = 0; buffer[i] != '\0'; i++, (shmAdt->writePos)++){
         
-        if(shmAdt->pos >= shmAdt->sizeSHM)
+        if(shmAdt->writePos >= shmAdt->sizeSHM)
             perror("Error Shared Memory capacity exceded");
 
-        (shmAdt->address)[shmAdt->pos] = buffer[i];
+        (shmAdt->address)[shmAdt->writePos] = buffer[i];
     }
+
+    // sem post!
 
 }
 
 
 void readSHM(shmADT shmAdt, char * buffer){
 
+    if(shmAdt == NULL || buffer == NULL){
+        perror("Invalid parameters for writeSHM");
+    }
+
+    //sem wait!
+    int i = 0;
+    for(; (shmAdt->address)[shmAdt->readPos] != '\0'; i++, (shmAdt->readPos)++){
+        buffer[i] = (shmAdt->address)[shmAdt->readPos];
+    }
+
+    buffer[i++] = '\0';
 }
 
 
-
 //________________Static functions________________
+
 
 static void unlinkSem(shmADT shmAdt){
     if(sem_unlink(shmAdt->nameSEM) == -1){
@@ -191,6 +204,7 @@ static void unlinkSem(shmADT shmAdt){
         exit();
     }
 }
+
 
 static void unlinkShm(shmADT shmAdt){
     if(shm_unlink(shmAdt->nameSHM)){
