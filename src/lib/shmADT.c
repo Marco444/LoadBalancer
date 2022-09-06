@@ -10,7 +10,7 @@
 
 //TODO check if there are unnecesary #include's
 
-#include "shmADT.h"
+#include "../include/shmADT.h"
 
 typedef struct shmCDT{
 
