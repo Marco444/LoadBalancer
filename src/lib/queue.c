@@ -50,13 +50,16 @@ void append(Queue * queue, char * str) {
 }
 
 void destroyNode(Node * elem) {
-    free(elem->str);
+    //LA CLAVE ACA ES USAR STRINGS LITERALES,
+    //DE ESA MANERA NO SOLAMENTE NO TENGO QUE
+    //HACER FREER SINO QUE TAMBIEN GASTO MENOS
+    //TIEMPO EN MEMORIA DINAMICA
+    //free(elem->str);
     free(elem);
 }
 
 void destroyQueue(Queue * queue) {
-    while(!isEmpty(queue))
-        destroyNode(pop(queue));
+    while(!isEmpty(queue)) destroyNode(pop(queue));
     free(queue);
 }
 

@@ -11,7 +11,7 @@
 void createChild(char * file, int read_addr, int write_addr) {
 
     //define two strings to store parent_child_c of pipe
-    char read[20], write[20];
+    char read[MAX_INT_DIGITS], write[MAX_INT_DIGITS];
     sprintf(read, "%d", read_addr);
     sprintf(write, "%d", write_addr);   // esto no hace falta
 
@@ -34,6 +34,7 @@ slaves * createSlaves(int slaveCount)
         int channelA[2];
         //definimos le channelB para que el padre lea y el hijo escriba
         int channelB[2];
+
         if(pipe(channelA) == -1 ||  pipe(channelB) == -1){
             secureFree(slavesPipes);
             perror("Creation pipe error");

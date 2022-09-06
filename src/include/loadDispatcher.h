@@ -23,6 +23,8 @@
 
 ////////////////////////////////////////////////////////////////////////////
 //como mando una string dinamica como argumento de execv y dsp la libero????
+// Puede ser que no lo necesite, se que un fd tiene un tamanio de un entero!
+// Lo mismo puede pensarse en usar lo de la longitud de los nombres de los archivos
 ///////////////////////////////////////////////////////////////////////////
 
 typedef struct slaves{
