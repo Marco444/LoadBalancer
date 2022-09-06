@@ -12,6 +12,9 @@
 
 #include "../include/shmADT.h"
 
+static void unlinkSem(shmADT shmAdt);
+static void unlinkShm(shmADT shmAdt);
+
 typedef struct shmCDT{
 
     const char * nameSHM;
@@ -141,14 +144,16 @@ void closeSHM(shmADT shmAdt){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
-        perrorExit("Error unmapping address");
+        perror("Error while unmapping address");
+        exit();
     }
     
     if(-1 == sem_close(shmAdt->sem)){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
-        perrorExit("Error closing sem");
+        perror("Error while closing sem");
+        exit();
     }
 
     if(shmAdt->creator){
@@ -175,6 +180,11 @@ void writeSHM(shmADT shmAdt, char * buffer){
     }
 
     // sem post!
+    if(sem_post(shmAdt->nameSEM) == -1){
+        closeSHM(shmAdt);
+        perror("Error while writing in Shared Memory");
+        exit();
+    }
 
 }
 
@@ -186,6 +196,12 @@ void readSHM(shmADT shmAdt, char * buffer){
     }
 
     //sem wait!
+    if(sem_wait(shmAdt->nameSEM) == -1){
+        unlinkSem(shmAdt);
+        unlinkShm(shmAdt);
+        free(shmAdt);
+    }
+
     int i = 0;
     for(; (shmAdt->address)[shmAdt->readPos] != '\0'; i++, (shmAdt->readPos)++){
         buffer[i] = (shmAdt->address)[shmAdt->readPos];
