@@ -42,7 +42,6 @@ int main(int argc, char *argv[])
         tasks[i - 1] = malloc_c(sizeof(struct task));
         tasks[i - 1]->fileSize = fileStats.st_size;
         tasks[i - 1]->fileId = i;
-
         
     }
 
@@ -58,23 +57,20 @@ int main(int argc, char *argv[])
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
     
-
     fd_set fdSet; // Preguntar si esto es necesario
     struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     
     char message[MAXBUFFER];
-
     while (manager.filesDone < manager.filesCount) {
-
-        //Por cada elemeto que lee le envia uno a consiguiente
-        readSlave(&manager, message);      
-        printf(message);
-
+  
         if(!hasNextFileId(loads[manager.lastView])) continue;
         int nextFileIdx = nextFileId(loads[manager.lastView]);
         char * file = argv[nextFileIdx];    
-
         writeSlave(&manager,file,manager.lastView);
+        //Por cada elemeto que lee le envia uno a consiguiente
+        readSlave(&manager, message);
+        puts(message);
+      
     }
 
     destroyAllLoads(loads,slavesCount);

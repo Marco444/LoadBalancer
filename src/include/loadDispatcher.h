@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 /*
     Estructura la cual va a manejar la comunicacion con cada uno de los procesos esclavos
 */

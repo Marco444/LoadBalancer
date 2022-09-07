@@ -33,8 +33,9 @@ void readSlave(slavesManager * manager, char *buffer)
 
 void writeSlave(slavesManager *manager, char *file, int slaveNum)
 {
-    if (write(manager->pipes->writeFD[slaveNum], file, MAXBUFFER) == -1)
-        perror("Writting error");
+    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)) == -1)
+        perror("writting error");
+    write(manager->pipes->writeFD[slaveNum], "\n", 1);
 }
 
 int next(fd_set *fdset, int lastView, int *readFd, int count)
