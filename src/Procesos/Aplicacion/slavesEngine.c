@@ -6,7 +6,8 @@
 
 */
 
-#include <slaveEngine.h>
+#include <slavesEngine.h>
+
 int next(fd_set *fdset, int lastView, int *readFd, int count);
 void setFDS(int *fds, fd_set *fdset, int count);
 

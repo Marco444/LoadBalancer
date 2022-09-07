@@ -18,7 +18,7 @@ Load * createLoads(int loadsCount) {
     return loads;
 }
 
-Load * slavesTasks(Task * tasks, int taskCount, int * loadsCount) {
+Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
 
     //ordeno los elementos por orden DESCENDENTE
     qsort(tasks, taskCount, sizeof(Task), cmpTask);
@@ -51,6 +51,9 @@ Load * slavesTasks(Task * tasks, int taskCount, int * loadsCount) {
     //updateamos la cantidad de loads que creamos
     *loadsCount = loadNumber;
 
+    //destruimos la memoria alocada para tasks
+    destroyTasks(tasks, taskCount);
+
     return loads;
 }
 
@@ -68,6 +71,11 @@ int loadBalances(Load load, Task task, Task * tasks, int taskCount) {
     //como ya definimos el tamanio maximo de una load no deberia ser mayor al
     //tamanio de la task mas grande, tambien considerando un factor de overloading
     return tasks[taskCount - 1]->fileSize >  task->fileSize +  load->size;
+}
+
+void destroyTask(Task * tasks, int count) {
+    for (size_t i = 0; i < count; i++)
+        free(tasks[i]);
 }
 
 void destroyLoad(Load load) {

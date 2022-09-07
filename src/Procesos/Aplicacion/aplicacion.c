@@ -6,37 +6,50 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include <loadDispatcher.h>
-#include <slaveEngine.h>
+
+#include "loadBalancer.h"
+#include "loadDispatcher.h"
+#include "slavesEngine.h"
 
 
 int main(int argc, char *argv[])
 {
 
-    if (argc < 2)
-    {
-        printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
-    }
+    if (argc < 2) printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
 
-    struct stat stats;
-    for (int i = 1; i < argc; i++)
-    {
-        if (stat(argv[i], &stats) != 0)
+    /////////////////////////////////////////////////////////////
+    /// Manejo la lectura de los archivos a un arreglo de Tasks, 
+    /////////////////////////////////////////////////////////////
+    struct stat fileStats;    
+    Task tasks[argc];
+
+    for (int i = 1; i < argc; i++) {
+        if (stat(argv[i], &fileStats) != 0)
             printf("Error! : cannot access %s file\n", argv[i]);
 
-        if (S_ISDIR(stats.st_mode))
+        if (S_ISDIR(fileStats.st_mode))
             printf("Error! : %s is a directory\n", argv[i]);
+
+        tasks[i] = malloc_c(sizeof(struct task));
+        tasks[i]->fileSize = fileStats.st_size;
+        tasks[i]->fileId = i;
     }
 
+    int slavesCount;
+    Load * loads = getSlavesTasks(tasks, argc, &slavesCount);
+
+
+    loads[0]->first
 
     fd_set fdSet; // Preguntar si esto es necesario
-    struct SlaveManager manager = {.slaveCount = 15, .pipes = createSlaves(3), .fdset = fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
+    struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
+    
     char message[MAXBUFFER];
-    char file[MAXBUFFER]; // esto es representativo
-    while (manager.filesDone < manager.filesCount)
-    {
+    while (manager.filesDone < manager.filesCount) {
+
         //Por cada elemeto que lee le envia uno a consiguiente
-        getDone(&manager, message);             
-        writeSlave(&manager,file,manager.lastView);
-    }
+        getDone(&manager, message);     
+
+        writeSlave(&manager, file, manager.lastView);
+    } 
 }
