@@ -8,12 +8,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <lib.h>
 /*
     Estructura la cual va a manejar la comunicacion con cada uno de los procesos esclavos
-*/
-#define MAXBUFFER 250
-/*
-    Struct el cual guarda la informacion para el manejo de los slaves
 */
 typedef  struct SlaveManager {
     slaves * pipes;
