@@ -9,5 +9,5 @@ loadDispatcher: slave.c,
 			  	gcc $(FLAGS) testLoadDispatcher.c -o main
 			  	./main
 
-all:	Procesos/Aplicacion/aplicacion.c
-				gcc $(FLAGS) esclavo.c -o ESCLAVO
+all:
+				gcc -lpthread -std=c99 -o "APLICACION" aplicacion.c loadBalancer.c loadDispatcher.c slavesEngine.c lib.c

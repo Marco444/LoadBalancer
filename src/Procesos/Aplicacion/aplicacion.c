@@ -6,11 +6,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include <loadDispatcher.h>
-#include <slaveEngine.h>
+#include "../../include/loadDispatcher.h"
+#include "../../include/slavesEngine.h"
 #include <sys/types.h>
 #include <sys/wait.h>
-
+#include "../../include/loadBalancer.h"
+#include "../../include/lib.h"
 
 int main(int argc, char *argv[])
 {
@@ -38,17 +39,17 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-    int slavesCount;
+     int slavesCount;
     Load * loads = getSlavesTasks(tasks, argc, &slavesCount);
 
-    initiAllIterators(loads);
-   
+    initiAllIterators(loads,slavesCount); 
+    
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
     
 
-    fd_set fdSet; // Preguntar si esto es necesario
+/*     fd_set fdSet; // Preguntar si esto es necesario
     struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     
     char message[MAXBUFFER];
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
 
         //Por cada elemeto que lee le envia uno a consiguiente
         readSlave(&manager, message);      
-
+        printf(message);
 
         if(!hasNextFileId(loads[manager.lastView])) continue;
         int nextFileIdx = nextFileId(loads[manager.lastView]);
@@ -66,12 +67,12 @@ int main(int argc, char *argv[])
         writeSlave(&manager,file,manager.lastView);
     }
 
-    destroyAllLoads(loads);
+    destroyAllLoads(loads,slavesCount);
 
     int status;
     for (int i = 0; i < manager.slaveCount; i++)
     {
         wait(&status);
     }
-    
+ */    
 }

@@ -83,7 +83,7 @@ int nextFileId(Load load);
 void destroyLoad(Load load);
 
 /* destruye toda la informacion atada a cada task */
-void destroyTask(Task * tasks, int count);
+void destroyTasks(Task * tasks, int count);
 
 /* comienza el iterador de las laods*/
 void initIterator(Load load);

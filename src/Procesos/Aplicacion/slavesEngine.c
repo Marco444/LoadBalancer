@@ -3,6 +3,7 @@
 //
 
 #include "../../include/loadDispatcher.h"
+#include "../../include/lib.h"
 #include<stdio.h>
 #include<unistd.h>
 #include <sys/wait.h>
@@ -36,7 +37,7 @@ slaves * createSlaves(int slaveCount)
         int channelB[2];
 
         if(pipe(channelA) == -1 ||  pipe(channelB) == -1){
-            secureFree(slavesPipes);
+            secureFreeSlave(slavesPipes);
             perror("Creation pipe error");
         }
 
@@ -54,7 +55,7 @@ slaves * createSlaves(int slaveCount)
                 close(slavesPipes->writeFD[j]);
             }
             // Guardo los pipes para que luego poder hacer el waite cuando terminen
-            createChild("../../testing/ESCLAVO", channelA[0], channelB[1]);
+            createChild("../Esclavo/ESCLAVO", channelA[0], channelB[1]);
 
         } else {
             close(channelA[0]); //cerrar la lectura porque solo escribo channel A

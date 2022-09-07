@@ -2,8 +2,8 @@
 // Created by Marco Scilipoti on 04/09/2022.
 //
 
-#ifndef TEST_LIB_H
-#define TEST_LIB_H
+#ifndef LIB_H
+#define LIB_H
 
 #include <stdlib.h>
 #include <stdio.h>

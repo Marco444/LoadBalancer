@@ -15,8 +15,7 @@
     Params: buffer en donde se pondra el valor del md5 con el nombre de aplicacion
     void md5Calculate(char * buffer);
 */
-void md5Calculate(char * buffer);
-
+void md5Calculate(char *buffer,char * file);
 
 
 

@@ -26,7 +26,7 @@
 // Puede ser que no lo necesite, se que un fd tiene un tamanio de un entero!
 // Lo mismo puede pensarse en usar lo de la longitud de los nombres de los archivos
 ///////////////////////////////////////////////////////////////////////////
-#include <lib.h>
+#include "lib.h"
 typedef struct slaves{
     int * readFD;
     int * writeFD;

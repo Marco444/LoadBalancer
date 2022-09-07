@@ -1,14 +1,14 @@
 
-#ifndef TEST_LOADDISPATCHER_H
-#define TEST_LOADDISPATCHER_H
-#include "slaveEngine.h"
+#ifndef LOAD_DISPATCHER_H
+#define LOAD_DISPATCHER_H
+
+#include "slavesEngine.h"
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
-#include <lib.h>
 /*
     Estructura la cual va a manejar la comunicacion con cada uno de los procesos esclavos
 */
@@ -29,5 +29,5 @@ typedef  struct SlaveManager {
 
 */
 void readSlave(slavesManager * manager,char * buffer);
-
+void writeSlave(slavesManager *manager, char *file, int slaveNum);
 #endif

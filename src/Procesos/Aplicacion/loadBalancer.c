@@ -3,7 +3,7 @@
 //
 
 #include "../../include/loadBalancer.h"
-#include "lib.h"
+#include "../../include/lib.h"
 
 Load * createLoads(int loadsCount) {
 
@@ -73,7 +73,7 @@ int loadBalances(Load load, Task task, Task * tasks, int taskCount) {
     return tasks[taskCount - 1]->fileSize >  task->fileSize +  load->size;
 }
 
-void destroyTask(Task * tasks, int count) {
+void destroyTasks(Task * tasks, int count) {
     for (size_t i = 0; i < count; i++)
         free(tasks[i]);
 }
