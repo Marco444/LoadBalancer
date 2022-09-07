@@ -1,36 +1,56 @@
-
+//
+// Created by Marco Scilipoti on 05/09/2022.
+//
 #ifndef slave_Engine_H
 #define slave_Engine_H
-#include "loadDispatcher.h"
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
-/*
-    Estructura la cual va a manejar la comunicacion con cada uno de los procesos esclavos
-*/
-#define MAXBUFFER 250
-/*
-    Struct el cual guarda la informacion para el manejo de los slaves
-*/
-typedef  struct SlaveManager {
-    slaves * pipes;
-    int filesCount;
-    int filesDone;
-    int slaveCount;
-    int lastView;
-    fd_set fdset;
-    int inSet; 
-}slavesManager;
+
+
 
 /*
-    Funcion la cual te va a devolver el procesamiento de algun archivo si es que hay alguno
-    @params: manager-> estructura que tiene la informacion sobre los fd y todo.
-            buffer -> buffer en donde se pondra la informacion del archivo.
+ * Esta parte viene a encargarse de distribuir las tasks entre los procesos, notar que una vez formado los
+ * batches de trabajo todavia nos queda distribuirlos entre los procesos que se van a encargar de hacerlos.
+ *
+ * Esencialemnte las limitaciones al hacer el dispatcher son dos: primero que puedo tener mas loads que
+ * esclavos para enviarles mi archivo y segundo que la distribucion de loads esta hecha de manera aproximada
+ * (el problema es NP), por lo tanto puede ser que queden procesos esperando a otros terminar mas de lo que se\
+ * deberia.
+ *
+ * El dispatcher entonces ademas de manejar las loads para un unico proceso, se encargaria de tner una seccion de loads,
+ * una pool, donde se guardarian las loads de un un grupo de procesos/
+ * */
 
+
+
+////////////////////////////////////////////////////////////////////////////
+//como mando una string dinamica como argumento de execv y dsp la libero????
+// Puede ser que no lo necesite, se que un fd tiene un tamanio de un entero!
+// Lo mismo puede pensarse en usar lo de la longitud de los nombres de los archivos
+///////////////////////////////////////////////////////////////////////////
+#include <lib.h>
+typedef struct slaves{
+    int * readFD;
+    int * writeFD;
+    int * slavesIds;
+    int * countLoads;
+} slaves;
+/*
+    Funcion la cual crea a un hijo con sus respectivos pipes
+    @params: file -> aplicacion a la cual le hara el execv
+            read_addr -> file descriptor en donde leera el hijo
+            write_addr-> el file descriptor en donde escribira el hijo
 */
-void getDone(slavesManager * manager,char * buffer);
+void createChild(char * file, int read_addr, int write_addr);
+/*
+    Funcion la cual crea a los esclavos con sus respectivos pipe
+    @params: slaveCount -> cantidad de esclavos que se quieren crear
+    @returnValue: Un struct en donde se encuentra los fd de lectura a todos los hijos
+    ,los fd de escritura a todos los hijos y los pid de cada uno. 
+*/
+slaves * createSlaves(int slaveCount);
+/*
+    Funcion la cual se encarga de hacer un free de la estructura slaves
+    @params: freeElemet -> elemento al cual le queremos hacer un free
+*/
+void secureFreeSlave(slaves * freeElement);
 
 #endif

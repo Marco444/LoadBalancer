@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
     }
 
 
-    fd_set fdSet; // Preguntar si esto es necesario
-    struct SlaveManager manager = {.slaveCount = 15, .pipes = createSlaves(3), .fdset = fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
+    fd_set fdSet; //TODO Preguntar si esto es necesario
+    struct SlaveManager manager = {.slaveCount = 15, .pipes = createSlaves(3), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     char message[MAXBUFFER];
     char file[MAXBUFFER]; // esto es representativo
     while (manager.filesDone < manager.filesCount)
