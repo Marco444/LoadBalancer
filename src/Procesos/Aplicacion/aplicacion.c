@@ -16,31 +16,41 @@
 int main(int argc, char *argv[])
 {
 
-    if (argc < 2) printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
+    if (argc < 2) {
+        printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
+        exit(1);
+    }
 
     /////////////////////////////////////////////////////////////
     /// Manejo la lectura de los archivos a un arreglo de Tasks, 
     /////////////////////////////////////////////////////////////
     struct stat fileStats;    
-    Task tasks[argc];
+    Task tasks[argc - 1];
 
     for (int i = 1; i < argc; i++) {
-        if (stat(argv[i], &fileStats) != 0)
+        if (stat(argv[i], &fileStats) != 0) {
             printf("Error! : cannot access %s file\n", argv[i]);
+            exit(1);
+        }
 
-        if (S_ISDIR(fileStats.st_mode))
+        if (S_ISDIR(fileStats.st_mode)) {
             printf("Error! : %s is a directory\n", argv[i]);
+            exit(1);
+        }
 
-        tasks[i] = malloc_c(sizeof(struct task));
-        tasks[i]->fileSize = fileStats.st_size;
-        tasks[i]->fileId = i;
+        
+        tasks[i - 1] = malloc_c(sizeof(struct task));
+        tasks[i - 1]->fileSize = fileStats.st_size;
+        tasks[i - 1]->fileId = i;
+
+        
     }
 
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
      int slavesCount;
-    Load * loads = getSlavesTasks(tasks, argc, &slavesCount);
+    Load * loads = getSlavesTasks(tasks, argc - 1, &slavesCount);
 
     initiAllIterators(loads,slavesCount); 
     
@@ -49,7 +59,7 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     
 
-/*     fd_set fdSet; // Preguntar si esto es necesario
+    fd_set fdSet; // Preguntar si esto es necesario
     struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     
     char message[MAXBUFFER];
@@ -74,5 +84,5 @@ int main(int argc, char *argv[])
     {
         wait(&status);
     }
- */    
+ 
 }
