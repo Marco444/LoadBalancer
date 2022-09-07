@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+#define MAXBUFFER 255
 
 /* un wrapper del malloc que chequea si fallo o no */
 void * malloc_c(size_t size);
