@@ -8,12 +8,8 @@
 #include <semaphore.h>
 #include <loadDispatcher.h>
 #include <slaveEngine.h>
-//
-// Created by Marco Scilipoti on 04/09/2022.
-//
-//
-// Created by Ippo on 04/09/2022.
-//
+
+
 int main(int argc, char *argv[])
 {
 
@@ -33,13 +29,14 @@ int main(int argc, char *argv[])
     }
 
 
-
-    struct SlavesManager Manager = {.slaveCount = 15, .pipes = createSlaves(3),  .fileCount =  argc - 1, .filesDone = 0, .inSet = 0};
+    fd_set fdSet; // Preguntar si esto es necesario
+    struct SlaveManager manager = {.slaveCount = 15, .pipes = createSlaves(3), .fdset = fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     char message[MAXBUFFER];
-    while (manager->filesDone < manager->filesCount)
+    char file[MAXBUFFER]; // esto es representativo
+    while (manager.filesDone < manager.filesCount)
     {
-        getDone(manager, message);
-
-        // Aca debemos escribir
+        //Por cada elemeto que lee le envia uno a consiguiente
+        getDone(&manager, message);             
+        writeSlave(&manager,file,manager.lastView);
     }
 }

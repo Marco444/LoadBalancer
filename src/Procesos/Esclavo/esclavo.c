@@ -1,39 +1,55 @@
 
 #include "../../include/esclavo.h"
 
-int main(int argC,char * argV[]){
+int main(int argC, char *argV[])
+{
 
-    char* ptr = (char*)malloc(MAXBUFFER);
-    md5Calculate(ptr);
-    printf(ptr);
-    free(ptr);
+    char ptr[MAXBUFFER];
+    // Le voy calculando todos los md5 a los archivos iniciales
+    // cuando termino con ellos pido mas
+    for (int i = 0; i < (argC - 1); i++)
+    {
+        md5Calculate(ptr,argV[i+1]);
+        printf(ptr);
+        
+    }
+    char actFile[MAXBUFFER];
+    // Si es null quiere decir que se cerro el pipe
+    while (fgets(actFile,MAXBUFFER,stdin) == NULL)
+    {
+        md5Calculate(ptr,actFile);
+        printf(ptr);
+    }
     return 0;
 }
 
-void md5Calculate(char * buffer){
+void md5Calculate(char *buffer,char * file)
+{
     int fd[2];
-    int returnV;
-    if(pipe(fd) < 0){
-        free(buffer);
+    int childPid;
+    int status;
+    char command[MAXBUFFER];
+    if (pipe(fd) < 0)
         perror("Error to calculate md5");
-        }
-    if ((returnV = fork()) == 0)
+
+    // Esto se puede cambiar por un popen 
+    if ((childPid = fork()) == 0)
     {
         close(fd[0]);
         close(1);
-        dup2(fd[1],1);
+        dup2(fd[1], 1);
         close(fd[1]);
-        execl("/bin/sh", "sh", "-c", "md5sum  aplicacion.c", (char *) 0);
-
-    }else{
-        if(returnV == -1)
+        sprintf(command,"%s %s","md5sum",file);
+        execl("/bin/sh", "sh", "-c", command , (char *)0);
+    }
+    else
+    {
+        if (childPid == -1)
             perror("Fork error in md5");
-        else{
-            int status;
-            waitpid(returnV,&status,WUNTRACED | WCONTINUED);
-            }
-        sprintf(buffer,"%ld ",(long)getpid());
-        read(fd[0],buffer + strlen(buffer),MAXBUFFER);
+        close(fd[1]);   // Padre solo lee
+        waitpid(childPid, &status, WUNTRACED | WCONTINUED); // Espero a la respuesta del hijo 
+        sprintf(buffer, "%ld ", (long)getpid());            // Concateno
+        read(fd[0], buffer + strlen(buffer), MAXBUFFER);    // leo lo que me deja el hijo
         close(fd[0]);
     }
 }

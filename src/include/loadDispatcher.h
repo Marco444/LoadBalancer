@@ -26,20 +26,31 @@
 // Puede ser que no lo necesite, se que un fd tiene un tamanio de un entero!
 // Lo mismo puede pensarse en usar lo de la longitud de los nombres de los archivos
 ///////////////////////////////////////////////////////////////////////////
-
+#include <lib.h>
 typedef struct slaves{
     int * readFD;
     int * writeFD;
-   int * slavesIds;
+    int * slavesIds;
+    int * countLoads;
 } slaves;
-
-
-
+/*
+    Funcion la cual crea a un hijo con sus respectivos pipes
+    @params: file -> aplicacion a la cual le hara el execv
+            read_addr -> file descriptor en donde leera el hijo
+            write_addr-> el file descriptor en donde escribira el hijo
+*/
 void createChild(char * file, int read_addr, int write_addr);
-
-
+/*
+    Funcion la cual crea a los esclavos con sus respectivos pipe
+    @params: slaveCount -> cantidad de esclavos que se quieren crear
+    @returnValue: Un struct en donde se encuentra los fd de lectura a todos los hijos
+    ,los fd de escritura a todos los hijos y los pid de cada uno. 
+*/
 slaves * createSlaves(int slaveCount);
+/*
+    Funcion la cual se encarga de hacer un free de la estructura slaves
+    @params: freeElemet -> elemento al cual le queremos hacer un free
+*/
+void secureFreeSlave(slaves * freeElement);
 
-void secureFreeSlave(slaves * freeElement)
-
-#endif //TEST_LOADDISPATCHER_H
+#endif

@@ -2,10 +2,7 @@
 #ifndef slave_Engine_H
 #define slave_Engine_H
 #include "loadDispatcher.h"
- /* According to POSIX.1-2001 */
 #include <sys/select.h>
-
-/* According to earlier standards */
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -15,8 +12,10 @@
     Estructura la cual va a manejar la comunicacion con cada uno de los procesos esclavos
 */
 #define MAXBUFFER 250
-
-typedef struct {
+/*
+    Struct el cual guarda la informacion para el manejo de los slaves
+*/
+typedef  struct SlaveManager {
     slaves * pipes;
     int filesCount;
     int filesDone;
@@ -26,6 +25,12 @@ typedef struct {
     int inSet; 
 }slavesManager;
 
+/*
+    Funcion la cual te va a devolver el procesamiento de algun archivo si es que hay alguno
+    @params: manager-> estructura que tiene la informacion sobre los fd y todo.
+            buffer -> buffer en donde se pondra la informacion del archivo.
 
+*/
+void getDone(slavesManager * manager,char * buffer);
 
 #endif

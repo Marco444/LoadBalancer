@@ -21,13 +21,14 @@ void createChild(char * file, int read_addr, int write_addr) {
 
     execv(file, childArgs);
 }
-
 slaves * createSlaves(int slaveCount)
+
 {
-    slaves * slavesPipes = malloc(sizeof(slaves));
-    slavesPipes -> readFD = malloc(sizeof(int) * slaveCount);
-    slavesPipes -> writeFD = malloc(sizeof(int) * slaveCount);
-    slavesPipes -> slavesIds = malloc(sizeof(int));
+    //TODO habria que ver si se podria cambiar de lugar esto asi no creo inecesariamente con malloc
+    slaves * slavesPipes = malloc_c(sizeof(slaves));              
+    slavesPipes -> readFD = malloc_c(sizeof(int) * slaveCount);
+    slavesPipes -> writeFD = malloc_c(sizeof(int) * slaveCount);
+    slavesPipes -> slavesIds = malloc_c(sizeof(int));
     for (int i = 0; i < slaveCount; ++i) {
 
         //definimos el channelA para que el padre escriba y el hijo lea
@@ -62,7 +63,7 @@ slaves * createSlaves(int slaveCount)
             close(channelB[1]); //cerrar la escritura porque solo leo channel B
 
             slavesPipes->readFD[i] = channelB[0];
-            slavesPipes->writeFD[i] = channelA[0];
+            slavesPipes->writeFD[i] = channelA[1];
         }
 
     }
