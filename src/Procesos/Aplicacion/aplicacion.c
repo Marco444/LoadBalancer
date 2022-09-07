@@ -8,7 +8,8 @@
 #include <semaphore.h>
 #include <loadDispatcher.h>
 #include <slaveEngine.h>
-
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int main(int argc, char *argv[])
 {
@@ -39,4 +40,10 @@ int main(int argc, char *argv[])
         getDone(&manager, message);             
         writeSlave(&manager,file,manager.lastView);
     }
+    int status;
+    for (int i = 0; i < manager.slaveCount; i++)
+    {
+        wait(&status);
+    }
+    
 }

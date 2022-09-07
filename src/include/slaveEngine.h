@@ -30,8 +30,6 @@
 typedef struct slaves{
     int * readFD;
     int * writeFD;
-    int * slavesIds;
-    int * countLoads;
 } slaves;
 /*
     Funcion la cual crea a un hijo con sus respectivos pipes

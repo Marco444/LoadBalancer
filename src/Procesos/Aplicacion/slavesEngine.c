@@ -28,7 +28,6 @@ slaves * createSlaves(int slaveCount)
     slaves * slavesPipes = malloc_c(sizeof(slaves));              
     slavesPipes -> readFD = malloc_c(sizeof(int) * slaveCount);
     slavesPipes -> writeFD = malloc_c(sizeof(int) * slaveCount);
-    slavesPipes -> slavesIds = malloc_c(sizeof(int));
     for (int i = 0; i < slaveCount; ++i) {
 
         //definimos el channelA para que el padre escriba y el hijo lea
@@ -55,8 +54,7 @@ slaves * createSlaves(int slaveCount)
                 close(slavesPipes->writeFD[j]);
             }
             // Guardo los pipes para que luego poder hacer el waite cuando terminen
-            slavesPipes -> slavesIds[i] = pid;
-            createChild("./esclavo.out", channelA[0], channelB[1]);
+            createChild("../Esclavo/esclavo.out", channelA[0], channelB[1]);
 
         } else {
             close(channelA[0]); //cerrar la lectura porque solo escribo channel A
@@ -73,6 +71,5 @@ slaves * createSlaves(int slaveCount)
 void secureFreeSlave(slaves * freeElement){
     free(freeElement ->readFD);
     free(freeElement -> writeFD);
-    free(freeElement->slavesIds);
     free(freeElement);
 }
