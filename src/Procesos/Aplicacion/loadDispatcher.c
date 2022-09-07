@@ -10,7 +10,7 @@
 int next(fd_set *fdset, int lastView, int *readFd, int count);
 void setFDS(int *fds, fd_set *fdset, int count);
 
-void getDone(slavesManager * manager, char *buffer)
+void readSlave(slavesManager * manager, char *buffer)
 {
 
     if (manager->inSet == 0)

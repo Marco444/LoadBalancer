@@ -91,4 +91,10 @@ void initIterator(Load load);
 /* comparador para ordenar taks en orden DESCENDENTE */
 int cmpTask (const void * a, const void * b);
 
+
+void initiAllIterators(Load * loads, int count);
+
+
+void destroyAllLoads(Load * loads, int count);
+
 #endif //TEST_LOADBALANCER_H

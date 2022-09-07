@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+
 int main(int argc, char *argv[])
 {
 
@@ -34,22 +35,39 @@ int main(int argc, char *argv[])
         tasks[i]->fileId = i;
     }
 
+    /////////////////////////////////////////////////////////////
+    /// Paso de las tasks a las loads para despues dispachear. 
+    /////////////////////////////////////////////////////////////
     int slavesCount;
     Load * loads = getSlavesTasks(tasks, argc, &slavesCount);
 
-
-    loads[0]->first
+    initiAllIterators(loads);
+   
+    /////////////////////////////////////////////////////////////
+    /// Paso de las tasks a las loads para despues dispachear. 
+    /////////////////////////////////////////////////////////////
+    
 
     fd_set fdSet; // Preguntar si esto es necesario
     struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     
     char message[MAXBUFFER];
+
     while (manager.filesDone < manager.filesCount) {
 
         //Por cada elemeto que lee le envia uno a consiguiente
-        getDone(&manager, message);             
+        readSlave(&manager, message);      
+
+
+        if(!hasNextFileId(loads[manager.lastView])) continue;
+        int nextFileIdx = nextFileId(loads[manager.lastView]);
+        char * file = argv[nextFileIdx];    
+
         writeSlave(&manager,file,manager.lastView);
     }
+
+    destroyAllLoads(loads);
+
     int status;
     for (int i = 0; i < manager.slaveCount; i++)
     {

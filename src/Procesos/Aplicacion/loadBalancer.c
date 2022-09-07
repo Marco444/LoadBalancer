@@ -127,3 +127,13 @@ int nextFileId(Load load) {
 int cmpTask (const void * a, const void * b) {
     return (int) ( ((Task) b)->fileSize - ((Task) a)->fileSize );
 }
+
+void initiAllIterators(Load * loads, int count) {
+    for (size_t i = 0; i < count; i++)
+        initIterator(loads[i]);
+}
+
+void destroyAllLoads(Load * loads, int count) {
+    for (size_t i = 0; i < count; i++)
+        destroyLoad(loads[i]);
+}
