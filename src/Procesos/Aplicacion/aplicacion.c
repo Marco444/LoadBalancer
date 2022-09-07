@@ -6,11 +6,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
-
-#include "loadBalancer.h"
-#include "loadDispatcher.h"
-#include "slavesEngine.h"
-
+#include <loadDispatcher.h>
+#include <slaveEngine.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int main(int argc, char *argv[])
 {
@@ -48,8 +47,13 @@ int main(int argc, char *argv[])
     while (manager.filesDone < manager.filesCount) {
 
         //Por cada elemeto que lee le envia uno a consiguiente
-        getDone(&manager, message);     
-
-        writeSlave(&manager, file, manager.lastView);
-    } 
+        getDone(&manager, message);             
+        writeSlave(&manager,file,manager.lastView);
+    }
+    int status;
+    for (int i = 0; i < manager.slaveCount; i++)
+    {
+        wait(&status);
+    }
+    
 }
