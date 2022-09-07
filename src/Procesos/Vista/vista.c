@@ -1,5 +1,6 @@
 #include "../../include/lib.h"
 #include "../../include/shmADT.h"
+#include <stdio.h>
 
 int main(int argc, char * argv[]){
 
