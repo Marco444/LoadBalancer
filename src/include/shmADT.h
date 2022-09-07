@@ -1,3 +1,6 @@
+#ifndef SHM_ADT_H
+#define SHM_ADT_H
+
 #include <string.h>
 #include <unistd.h>
 #include <semaphore.h>
@@ -37,3 +40,5 @@ void writeSHM(shmADT shmAdt, char * buffer);
 *   Reads the shared memory. It will use semphores in order to sync with writer.
 */
 void readSHM(shmADT shmAdt, char * buffer);
+
+#endif 

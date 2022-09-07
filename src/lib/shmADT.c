@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 //TODO check if there are unnecesary #include's
 
@@ -34,7 +35,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
 
     if(shmAdt == NULL){ 
         perror("Error while initializing Shared Memory");
-        exit();
+        exit(errno);
     }
 
     shmAdt->nameSHM = shm_name;
@@ -44,13 +45,13 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
 
     if(shm_fd == -1){
         perror("Error while initializing Shared Memory");    
-        exit();
+        exit(errno);
     }
 
     // We establish the size and check for errors
     if(ftruncate(shm_fd, shmSize) == -1){
         perror("Error while initializing Shared Memory");
-        exit();
+        exit(errno);
     }
 
     shmAdt->address = mmap(NULL, shmSize, prot, MAP_SHARED, shm_fd, 0);
@@ -59,7 +60,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
 
     if(shmAdt->address == MAP_FAILED){
         perror("Error while initializing Shared Memory");
-        exit();
+        exit(errno);
     }
 
 
@@ -67,7 +68,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while closing file descriptor");
-        exit();
+        exit(errno);
     }
     
     // We create the samphore
@@ -77,7 +78,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while creating semaphore");
-        exit();
+        exit(errno);
     }
     shmAdt->creator = 1;
 
@@ -91,7 +92,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
     if(shmAdt == NULL){ 
         perror("Error while initializing Shared Memory");
-        exit();
+        exit(errno);
     }
 
     shmAdt->nameSHM = shm_name;
@@ -101,7 +102,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
     if(shm_fd == -1){
         perror("Error while initializing Shared Memory");    
-        exit();
+        exit(errno);
     }
 
     shmAdt->address = mmap(NULL, shmSize, prot, MAP_SHARED, shm_fd, 0);
@@ -110,7 +111,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
     if(shmAdt->address == MAP_FAILED){
         perror("Error while initializing Shared Memory");
-        exit();
+        exit(errno);
     }
 
 
@@ -118,7 +119,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while closing file descriptor");
-        exit();
+        exit(errno);
     }
 
     
@@ -128,7 +129,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while opening semaphore");
-        exit();
+        exit(errno);
     }
     shmAdt->creator = 0;
 
@@ -145,7 +146,7 @@ void closeSHM(shmADT shmAdt){
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while unmapping address");
-        exit();
+        exit(errno);
     }
     
     if(-1 == sem_close(shmAdt->sem)){
@@ -153,7 +154,7 @@ void closeSHM(shmADT shmAdt){
         unlinkShm(shmAdt);
         free(shmAdt);
         perror("Error while closing sem");
-        exit();
+        exit(errno);
     }
 
     if(shmAdt->creator){
@@ -161,7 +162,7 @@ void closeSHM(shmADT shmAdt){
         unlinkShm(shmAdt);
     }
 
-    freeShm(shmAdt);
+    free(shmAdt);
 }
    
 
@@ -180,10 +181,10 @@ void writeSHM(shmADT shmAdt, char * buffer){
     }
 
     // sem post!
-    if(sem_post(shmAdt->nameSEM) == -1){
+    if(sem_post(shmAdt->sem) == -1){
         closeSHM(shmAdt);
         perror("Error while writing in Shared Memory");
-        exit();
+        exit(errno);
     }
 
 }
@@ -196,7 +197,7 @@ void readSHM(shmADT shmAdt, char * buffer){
     }
 
     //sem wait!
-    if(sem_wait(shmAdt->nameSEM) == -1){
+    if(sem_wait(shmAdt->sem) == -1){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
@@ -217,7 +218,7 @@ void readSHM(shmADT shmAdt, char * buffer){
 static void unlinkSem(shmADT shmAdt){
     if(sem_unlink(shmAdt->nameSEM) == -1){
         perror("Error unlinking Semaphore");
-        exit();
+        exit(errno);
     }
 }
 
@@ -225,6 +226,6 @@ static void unlinkSem(shmADT shmAdt){
 static void unlinkShm(shmADT shmAdt){
     if(shm_unlink(shmAdt->nameSHM)){
         perror("Error unlinking Shared Memory");
-        exit();
+        exit(errno);
     }
 }
