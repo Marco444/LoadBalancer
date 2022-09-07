@@ -28,6 +28,6 @@ typedef  struct SlaveManager {
             buffer -> buffer en donde se pondra la informacion del archivo.
 
 */
-void getDone(slavesManager * manager,char * buffer);
+void readSlave(slavesManager * manager,char * buffer);
 
 #endif

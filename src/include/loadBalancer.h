@@ -46,7 +46,7 @@ typedef struct nodeFileId {
 ////Una task viene a ser una tarea para nuestros esclavos, definida por el tamanio del archivo asi como
 ///el fileId del mismo para despues mapearlo al esclavo.
 typedef struct task {
-    int fileSize;
+    size_t fileSize;
     size_t fileId;
 } * Task;
 
@@ -61,7 +61,7 @@ typedef struct load {
  * y el numero de archivos a procesar. Devuelve un arreglo donde cada indice corresponde a un
  * esclavo diferente y mantiene los fileIds que tienen que procesar el esclavo.
  * */
-Load * slavesTasks(Task * tasks, int count, int * loadsCount);
+Load * getSlavesTasks(Task * tasks, int count, int * loadsCount);
 
 /* adds the task in question to the load */
 void appendTask(Load load, Task task);
@@ -82,10 +82,19 @@ int nextFileId(Load load);
 /* destruye toda la informacion atada a una load */
 void destroyLoad(Load load);
 
+/* destruye toda la informacion atada a cada task */
+void destroyTask(Task * tasks, int count);
+
 /* comienza el iterador de las laods*/
 void initIterator(Load load);
 
 /* comparador para ordenar taks en orden DESCENDENTE */
 int cmpTask (const void * a, const void * b);
+
+
+void initiAllIterators(Load * loads, int count);
+
+
+void destroyAllLoads(Load * loads, int count);
 
 #endif //TEST_LOADBALANCER_H

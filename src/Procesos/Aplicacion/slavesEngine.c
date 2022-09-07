@@ -21,8 +21,8 @@ void createChild(char * file, int read_addr, int write_addr) {
 
     execv(file, childArgs);
 }
-slaves * createSlaves(int slaveCount)
 
+slaves * createSlaves(int slaveCount)
 {
     //TODO habria que ver si se podria cambiar de lugar esto asi no creo inecesariamente con malloc
     slaves * slavesPipes = malloc_c(sizeof(slaves));              
@@ -54,7 +54,7 @@ slaves * createSlaves(int slaveCount)
                 close(slavesPipes->writeFD[j]);
             }
             // Guardo los pipes para que luego poder hacer el waite cuando terminen
-            createChild("../Esclavo/esclavo.out", channelA[0], channelB[1]);
+            createChild("../../testing/ESCLAVO", channelA[0], channelB[1]);
 
         } else {
             close(channelA[0]); //cerrar la lectura porque solo escribo channel A

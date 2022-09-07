@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "esclavo.h": "c"
+        "esclavo.h": "c",
+        "slaveengine.h": "c"
     }
 }
