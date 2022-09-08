@@ -10,7 +10,7 @@ Load * createLoads(int loadsCount) {
     Load * loads = malloc_c(loadsCount * sizeof(struct load *));
 
     for (int i = 0; i < loadsCount; i++) {
-        loads[i] = malloc_c(1 * sizeof(struct load));
+        loads[i] = malloc_c(sizeof(struct load));
         loads[i]->fileCount = 0;
         loads[i]->size = 0;
     }
@@ -76,7 +76,6 @@ Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
 
     //destruimos la memoria alocada para tasks
     destroyTasks(tasks, taskCount);
-
 
     return loads;
 }

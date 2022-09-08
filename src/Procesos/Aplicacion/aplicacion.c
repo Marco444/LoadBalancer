@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Paso de las Tasks a las Loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-    int slavesCount;
-    Load * loads = getSlavesTasks(tasks, argc - 1, &slavesCount);
+    int slavesCount, filesNumber = argc - 1;
+    Load * loads = getSlavesTasks(tasks, filesNumber, &slavesCount);
 
     initiAllIterators(loads, slavesCount); 
     
@@ -65,9 +65,10 @@ int main(int argc, char *argv[])
         writeSlave(manager,file,getLastView(manager));
         //Falta cerrar los fd de los hijos y hacer los frees
     }
-    
+
     freeManager(manager);
-    destroyAllLoads(loads, slavesCount);
+
+    destroyAllLoads(loads, filesNumber);
 
     int status;
     while (wait(&status) != -1);
