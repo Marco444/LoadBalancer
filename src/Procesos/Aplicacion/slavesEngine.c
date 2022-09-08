@@ -94,3 +94,14 @@ void secureFreeSlave(slaves *freeElement,int cant)
     free(freeElement->writeFD);
     free(freeElement);
 }
+void freeManager(SlavesManager toFree){
+    secureFreeSlave(toFree->pipes,toFree->filesCount);
+    free(toFree->fdset);
+    free(toFree);
+}
+int getDonesFile(SlavesManager manager){
+    return manager->filesDone;
+}
+int getLastView(SlavesManager manager){
+    return manager->lastView;
+}

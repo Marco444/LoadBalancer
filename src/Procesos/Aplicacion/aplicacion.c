@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
     ///con eso empiezo a distribuir las tasks
     /////////////////////////////////////////////////////////////
    SlavesManager manager = createManager(slavesCount,argc-1);
+   
+   //Give initial tasks
    for (int i = 0; i < manager->filesCount; i++)
    {
         if(!hasNextFileId(loads[i])) continue;
@@ -50,20 +52,20 @@ int main(int argc, char *argv[])
    }
    
     char message[MAXBUFFER]={0};
-    while (manager ->filesDone < manager->filesCount) {
+    while (getDoneFiles(manager) < (argc-1)) {
   
         //Por cada elemeto que lee le envia uno a consiguiente
         readSlave(manager, message);
         write(1,message,strlen(message)+1);
         clearBuff(message);
-        if(!hasNextFileId(loads[manager->lastView]))continue;
+        if(!hasNextFileId(loads[getLastView(manager)]))continue;
          
-        int nextFileIdx = nextFileId(loads[manager->lastView]);
+        int nextFileIdx = nextFileId(loads[getLastView(manager)]);
         char * file = argv[nextFileIdx];    
-        writeSlave(manager,file,manager->lastView);
+        writeSlave(manager,file,getLastView(manager));
         //Falta cerrar los fd de los hijos y hacer los frees
     }
-    secureFreeSlave(manager->pipes,manager->slaveCount);
+    freeManager(manager);
     destroyAllLoads(loads,slavesCount);
 
     int status;
@@ -74,10 +76,4 @@ int main(int argc, char *argv[])
  
     return 0;
 }
-void clearBuff(char * toClear){
-    for (int i = 0; toClear[i] != 0; i++)
-    {
-        toClear[i]=0;
-    }
-    
-}
+
