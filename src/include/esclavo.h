@@ -10,7 +10,6 @@
 #include <fcntl.h>           /* For O_* constants */
 #include <sys/stat.h>        /* For mode constants */
 #include <semaphore.h>
-#define MAXBUFFER 250
 
 /*
     Params: buffer en donde se pondra el valor del md5 con el nombre de aplicacion

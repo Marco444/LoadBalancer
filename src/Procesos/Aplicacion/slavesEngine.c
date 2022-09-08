@@ -70,6 +70,7 @@ slaves *createSlaves(int slaveCount)
     }
     return slavesPipes;
 }
+
 SlavesManager createManager(int slavesCount, int totalTask){
     fd_set * fdSet =malloc_c(sizeof(fd_set));
     FD_ZERO(fdSet);
@@ -93,4 +94,15 @@ void secureFreeSlave(slaves *freeElement,int cant)
     free(freeElement->readFD);
     free(freeElement->writeFD);
     free(freeElement);
+}
+void freeManager(SlavesManager toFree){
+    secureFreeSlave(toFree->pipes,toFree->slaveCount);
+    free(toFree->fdset);
+    free(toFree);
+}
+int getDoneFile(SlavesManager manager){
+    return manager->filesDone;
+}
+int getLastView(SlavesManager manager){
+    return manager->lastView;
 }

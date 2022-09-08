@@ -50,4 +50,5 @@ SlavesManager createManager(int slavesCount, int totalTask);
 */
 void readSlave(SlavesManager manager,char * buffer);
 void writeSlave(SlavesManager manager, char *file, int slaveNum);
+
 #endif

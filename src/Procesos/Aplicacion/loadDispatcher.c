@@ -32,6 +32,7 @@ void readSlave(SlavesManager  manager, char *buffer)
 }
 
 void writeSlave(SlavesManager manager, char *file, int slaveNum)
+
 {
     if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)+1) == -1)
         perror("writting error");
