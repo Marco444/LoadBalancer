@@ -65,8 +65,9 @@ int main(int argc, char *argv[])
         writeSlave(manager,file,getLastView(manager));
         //Falta cerrar los fd de los hijos y hacer los frees
     }
+    
     freeManager(manager);
-    destroyAllLoads(loads,slavesCount);
+    destroyAllLoads(loads, slavesCount);
 
     int status;
     while (wait(&status) != -1);

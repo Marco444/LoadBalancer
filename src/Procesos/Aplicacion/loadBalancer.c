@@ -7,12 +7,12 @@
 
 Load * createLoads(int loadsCount) {
 
-    Load * loads = calloc(loadsCount, sizeof(Load));
-    if(loads == NULL) perror("calloc de las loads fallo");
+    Load * loads = malloc_c(loadsCount * sizeof(struct load *));
 
-    for (int i = 0; i < loadsCount; ++i) {
-        loads[i] = calloc(1, sizeof(struct load));
-        if(loads[i] == NULL) perror("calloc");
+    for (int i = 0; i < loadsCount; i++) {
+        loads[i] = malloc_c(1 * sizeof(struct load));
+        loads[i]->fileCount = 0;
+        loads[i]->size = 0;
     }
 
     return loads;
@@ -77,6 +77,7 @@ Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
     //destruimos la memoria alocada para tasks
     destroyTasks(tasks, taskCount);
 
+
     return loads;
 }
 
@@ -108,6 +109,8 @@ void destroyLoad(Load load) {
         load->first = load->first->next;
         free(toFree);
     }
+
+    free(load);
 }
 
 void addFileId(Load load, FileId fileId) {
@@ -159,4 +162,5 @@ void initiAllIterators(Load * loads, int count) {
 void destroyAllLoads(Load * loads, int count) {
     for (size_t i = 0; i < count; i++)
         destroyLoad(loads[i]);
+    free(loads);
 }
