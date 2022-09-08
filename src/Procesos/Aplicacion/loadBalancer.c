@@ -18,6 +18,29 @@ Load * createLoads(int loadsCount) {
     return loads;
 }
 
+void readFilesInto(Task * tasks, char * argv[], int argc) {
+
+    struct stat fileStats;    
+
+    for (int i = 1; i < argc; i++) {
+        if (stat(argv[i], &fileStats) != 0) {
+            printf("Error! : cannot access %s file\n", argv[i]);
+            exit(1);
+        }
+
+        if (S_ISDIR(fileStats.st_mode)) {
+            printf("Error! : %s is a directory\n", argv[i]);
+            exit(1);
+        }
+
+        
+        tasks[i - 1] = malloc_c(sizeof(struct task));
+        tasks[i - 1]->fileSize = fileStats.st_size;
+        tasks[i - 1]->fileId = i; 
+    }
+}
+
+
 Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
 
     //ordeno los elementos por orden DESCENDENTE

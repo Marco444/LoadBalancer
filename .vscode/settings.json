@@ -2,6 +2,7 @@
     "files.associations": {
         "esclavo.h": "c",
         "slaveengine.h": "c",
-        "loaddispatcher.h": "c"
+        "loaddispatcher.h": "c",
+        "select.h": "c"
     }
 }

@@ -5,7 +5,6 @@
 #ifndef TEST_LOADBALANCER_H
 #define TEST_LOADBALANCER_H
 
-//NO ME SORTEA EL QSORT CORRECTAMENTE :(
 
 /*
  * El problema que busca resolver se base en, cuantos esclavos tengo que tener para procesar los archivos? La respuesta
@@ -62,6 +61,10 @@ typedef struct load {
  * esclavo diferente y mantiene los fileIds que tienen que procesar el esclavo.
  * */
 Load * getSlavesTasks(Task * tasks, int count, int * loadsCount);
+
+/* recibe los argumentos con los que se llamo a main y con ellos completa las tasks que se
+ tirenen que hacer */
+void readFilesInto(Task * tasks, char * argv[], int argc);
 
 /* adds the task in question to the load */
 void appendTask(Load load, Task task);
