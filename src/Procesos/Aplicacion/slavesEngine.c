@@ -95,11 +95,11 @@ void secureFreeSlave(slaves *freeElement,int cant)
     free(freeElement);
 }
 void freeManager(SlavesManager toFree){
-    secureFreeSlave(toFree->pipes,toFree->filesCount);
+    secureFreeSlave(toFree->pipes,toFree->slaveCount);
     free(toFree->fdset);
     free(toFree);
 }
-int getDonesFile(SlavesManager manager){
+int getDoneFile(SlavesManager manager){
     return manager->filesDone;
 }
 int getLastView(SlavesManager manager){

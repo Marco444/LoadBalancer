@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     ///con eso empiezo a distribuir las tasks
     /////////////////////////////////////////////////////////////
    SlavesManager manager = createManager(slavesCount,argc-1);
-   
+
    //Give initial tasks
    for (int i = 0; i < manager->filesCount; i++)
    {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
    }
    
     char message[MAXBUFFER]={0};
-    while (getDoneFiles(manager) < (argc-1)) {
+    while (getDoneFile(manager) < (argc-1)) {
   
         //Por cada elemeto que lee le envia uno a consiguiente
         readSlave(manager, message);
@@ -69,10 +69,8 @@ int main(int argc, char *argv[])
     destroyAllLoads(loads,slavesCount);
 
     int status;
-    for (int i = 0; i < manager->slaveCount; i++)
-    {
-        wait(&status);
-    }
+    while (wait(&status) != -1);
+  
  
     return 0;
 }

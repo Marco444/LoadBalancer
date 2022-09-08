@@ -4,7 +4,7 @@
 void clearBuff(char * toClear);
 int main(int argC, char *argV[])
 {
-     setvbuf(stdout, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
     char ptr[MAXBUFFER]={0};
     // Le voy calculando todos los md5 a los archivos iniciales
     // cuando termino con ellos pido mas

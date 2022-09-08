@@ -69,6 +69,6 @@ void secureFreeSlave(slaves *freeElement,int cant);
 
 SlavesManager createManager(int slavesCount, int totalTask);
 void freeManager(SlavesManager toFree);
-int getDoneFiles(SlavesManager manager);
+int getDoneFile(SlavesManager manager);
 int getLastView(SlavesManager manager);
 #endif
