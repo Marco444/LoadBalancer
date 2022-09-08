@@ -12,6 +12,8 @@
 #include <sys/wait.h>
 #include "../../include/loadBalancer.h"
 #include "../../include/lib.h"
+#include "../../include/shmADT.h"
+#include <sys/mman.h>
 #include <sys/select.h>
 void clearBuff(char * toClear);
 int main(int argc, char *argv[])
@@ -37,6 +39,12 @@ int main(int argc, char *argv[])
     initiAllIterators(loads, slavesCount); 
     
     /////////////////////////////////////////////////////////////
+    //  Abrimos un espacio de memoria compartida (SHM).
+    /////////////////////////////////////////////////////////////
+    shmADT shm = createSHM(SHM_NAME, SEM_NAME, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, MAXBUFFER * (argc - 1), PROT_WRITE);
+    printf("%d", argc - 1);
+    sleep(10);
+    /////////////////////////////////////////////////////////////
     /// Una vez que tengo las loads comienzo el slave manager y
     ///con eso empiezo a distribuir las tasks
     /////////////////////////////////////////////////////////////
@@ -51,10 +59,11 @@ int main(int argc, char *argv[])
    
     char message[MAXBUFFER]={0};
     while (manager ->filesDone < manager->filesCount) {
-  
+        clearBuff(message);
         //Por cada elemeto que lee le envia uno a consiguiente
         readSlave(manager, message);
-        write(1,message,strlen(message)+1);
+        //write(1,message,strlen(message)+1);
+        writeSHM(shm, message);
         clearBuff(message);
         if(!hasNextFileId(loads[manager->lastView]))continue;
          
@@ -71,7 +80,9 @@ int main(int argc, char *argv[])
     {
         wait(&status);
     }
- 
+    
+    closeSHM(shm);
+    
     return 0;
 }
 void clearBuff(char * toClear){

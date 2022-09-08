@@ -21,7 +21,7 @@ int main(int argC, char *argV[])
         clearBuff(ptr);
         md5Calculate(ptr,actFile);
         clearBuff(actFile);
-        printf("%s \n",ptr);
+        printf("%s",ptr);
         
     }
     return 0;

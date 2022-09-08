@@ -11,7 +11,7 @@
 
 //TODO check if there are unnecesary #include's
 
-#include "../include/shmADT.h"
+#include "../../include/shmADT.h"
 
 static void unlinkSem(shmADT shmAdt);
 static void unlinkShm(shmADT shmAdt);
@@ -173,13 +173,17 @@ void writeSHM(shmADT shmAdt, char * buffer){
         perror("Invalid parameters for writeSHM");
     }
 
-    for(int i = 0; buffer[i] != '\0'; i++, (shmAdt->writePos)++){
+    for(int i = 0; buffer[i] != '\n'; i++, (shmAdt->writePos)++){
         
         if(shmAdt->writePos >= shmAdt->sizeSHM)
             perror("Error Shared Memory capacity exceded");
 
         (shmAdt->address)[shmAdt->writePos] = buffer[i];
     }
+
+    (shmAdt->address)[(shmAdt->writePos)++] = '\n';
+
+//    (shmAdt->address)[(shmAdt->writePos)] = '\0';
 
     // sem post!
     if(sem_post(shmAdt->sem) == -1){
@@ -205,11 +209,14 @@ void readSHM(shmADT shmAdt, char * buffer){
     }
 
     int i = 0;
-    for(; (shmAdt->address)[shmAdt->readPos] != '\0'; i++, (shmAdt->readPos)++){
+    for(; (shmAdt->address)[shmAdt->readPos] != '\n'; i++, (shmAdt->readPos)++){
         buffer[i] = (shmAdt->address)[shmAdt->readPos];
     }
-
+    //buffer[++i] = '\n';
+    buffer[i++] = '\n';
     buffer[i++] = '\0';
+    (shmAdt->readPos)++;
+    (shmAdt->readPos)++;
 }
 
 

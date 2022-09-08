@@ -10,4 +10,8 @@ loadDispatcher: slave.c,
 			  	./main
 
 all:
-				gcc -lpthread -std=c99 -o "APLICACION" aplicacion.c loadBalancer.c loadDispatcher.c slavesEngine.c lib.c
+				gcc -g -lpthread -lrt -std=c99 -D_XOPEN_SOURCE=500 -pedantic -o "APLICACION" aplicacion.c loadBalancer.c loadDispatcher.c slavesEngine.c lib.c shmADT.c
+				gcc -g -Wall -lm -lrt -lpthread -std=c99 -D_XOPEN_SOURCE=500 -pedantic -o "VISTA" vista.c lib.c shmADT.c
+				gcc -g -lpthread -std=c99 -o ESCLAVO ../Esclavo/esclavo.c lib.c
+
+			
