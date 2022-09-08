@@ -15,27 +15,29 @@ void readSlave(slavesManager * manager, char *buffer)
 
     if (manager->inSet == 0)
     {
-        setFDS(manager->pipes->readFD, manager->fdset, manager->slaveCount);
-        if ((manager->inSet = select(manager->slaveCount,manager->fdset, NULL, NULL, NULL)) == -1){
+        printf("LLEGUE \n");
+
+        setFDS(manager->pipes->readFD, &manager->fdset, manager->slaveCount);
+        if ((manager->inSet = select(manager->pipes->readFD[manager->slaveCount-1] +1,&manager->fdset, NULL, NULL, NULL)) == -1){
             perror("Error in select");
             exit(1);
             }
         else
             manager->lastView = 0;
+        manager->inSet = manager->slaveCount;
     }
-
-    int index = next(manager->fdset, manager->lastView, manager->pipes->readFD, manager->slaveCount);
+    int index = next(&manager->fdset, manager->lastView, manager->pipes->readFD, manager->slaveCount);
     manager->inSet -= 1;
     manager->lastView = index;
-    FD_CLR(manager->pipes->readFD[manager->lastView],manager->fdset);
+    FD_CLR(manager->pipes->readFD[manager->lastView],&manager->fdset);
     read(manager->pipes->readFD[index], buffer, MAXBUFFER);
 }
 
 void writeSlave(slavesManager *manager, char *file, int slaveNum)
 {
-    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)) == -1)
+    if (write((manager->pipes->writeFD)[slaveNum], file, strlen(file)) == -1)
         perror("writting error");
-    write(manager->pipes->writeFD[slaveNum], "\n", 1);
+    write((manager->pipes->writeFD)[slaveNum], "\n", 1);
 }
 
 int next(fd_set *fdset, int lastView, int *readFd, int count)
@@ -49,7 +51,6 @@ int next(fd_set *fdset, int lastView, int *readFd, int count)
 }
 void setFDS(int *fds, fd_set *fdset, int count)
 {
-    FD_ZERO(fdset);
     for (int i = 0; i < count; i++)
     {
         FD_SET(fds[i], fdset);

@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include "../../include/loadBalancer.h"
 #include "../../include/lib.h"
+#include <sys/select.h>
 
 int main(int argc, char *argv[])
 {
@@ -56,9 +57,9 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-    
-    fd_set fdSet; // Preguntar si esto es necesario
-    struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = &fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
+    fd_set fdSet = {}; // Preguntar si esto es necesario
+    FD_ZERO(&fdSet);
+    struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
     
     char message[MAXBUFFER];
     while (manager.filesDone < manager.filesCount) {
@@ -70,7 +71,8 @@ int main(int argc, char *argv[])
         //Por cada elemeto que lee le envia uno a consiguiente
         readSlave(&manager, message);
         puts(message);
-      
+        manager.filesDone += 1;
+        //Falta cerrar los fd de los hijos y hacer los frees
     }
 
     destroyAllLoads(loads,slavesCount);

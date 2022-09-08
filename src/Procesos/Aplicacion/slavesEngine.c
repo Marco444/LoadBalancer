@@ -13,6 +13,8 @@ void createChild(char *file, int read_addr, int write_addr)
 {
 
     // seteo de la entrada y salida entrada del proyecto esclavo
+    close(0);
+    close(1);
     dup2(read_addr, 0);
     dup2(write_addr, 1);
     if (close(read_addr) == -1 || close(write_addr) == -1)
@@ -61,6 +63,7 @@ slaves *createSlaves(int slaveCount)
         {
             if (close(channelA[0]) == -1 || close(channelB[1]) == -1)
                 perror("Error closing pipes");
+            
             slavesPipes->readFD[i] = channelB[0];
             slavesPipes->writeFD[i] = channelA[1];
         }

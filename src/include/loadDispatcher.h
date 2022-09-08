@@ -19,7 +19,7 @@ typedef  struct SlaveManager {
     int filesDone;
     int slaveCount;
     int lastView;
-    fd_set * fdset;
+    fd_set  fdset;
     int inSet; 
 }slavesManager;
 

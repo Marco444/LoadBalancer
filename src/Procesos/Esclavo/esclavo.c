@@ -3,6 +3,7 @@
 
 int main(int argC, char *argV[])
 {
+     setvbuf(stdout, NULL, _IONBF, 0);
     char ptr[MAXBUFFER];
     // Le voy calculando todos los md5 a los archivos iniciales
     // cuando termino con ellos pido mas
@@ -12,14 +13,14 @@ int main(int argC, char *argV[])
         printf(ptr);
         
     }
-    char actFile[MAXBUFFER];
+    char * actFile = NULL;
+    size_t size = 0;
     // Si es null quiere decir que se cerro el pipe
-    while (1)
+    while (getline(&actFile,&size,stdin) != -1)
     {       
-        getline(actFile,MAXBUFFER,stdin);
-         printf(ptr);
         md5Calculate(ptr,actFile);
-        printf(ptr);
+        printf("%s \n",ptr);
+        
     }
     return 0;
 }
