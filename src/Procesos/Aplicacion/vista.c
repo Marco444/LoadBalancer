@@ -4,7 +4,7 @@
 
 int main(int argc, char * argv[]){
 
-    unsigned int filesCant;
+    int filesCant;
     //TODO check errors here?
     if(argc > 1){
         sscanf(argv[1], "%d", &filesCant);

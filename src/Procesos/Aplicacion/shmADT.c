@@ -216,7 +216,7 @@ void readSHM(shmADT shmAdt, char * buffer){
     buffer[i++] = '\n';
     buffer[i++] = '\0';
     (shmAdt->readPos)++;
-    (shmAdt->readPos)++;
+    //(shmAdt->readPos)++;
 }
 
 
