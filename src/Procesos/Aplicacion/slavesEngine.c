@@ -70,6 +70,7 @@ slaves *createSlaves(int slaveCount)
     }
     return slavesPipes;
 }
+
 SlavesManager createManager(int slavesCount, int totalTask){
     fd_set * fdSet =malloc_c(sizeof(fd_set));
     FD_ZERO(fdSet);
@@ -99,7 +100,7 @@ void freeManager(SlavesManager toFree){
     free(toFree->fdset);
     free(toFree);
 }
-int getDonesFile(SlavesManager manager){
+int getDoneFiles(SlavesManager manager){
     return manager->filesDone;
 }
 int getLastView(SlavesManager manager){
