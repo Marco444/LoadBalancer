@@ -21,7 +21,7 @@ Load * createLoads(int loadsCount) {
 Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
 
     //ordeno los elementos por orden DESCENDENTE
-    qsort(tasks, taskCount, sizeof(Task), cmpTask);
+    qsort(tasks, taskCount, sizeof(struct task *), cmpTask);
 
     //mantenemos un contador para la cantidad de loads que tuvimos
     //que crear (luego las mapeamos a los esclavos).
@@ -125,7 +125,7 @@ int nextFileId(Load load) {
 }
 
 int cmpTask (const void * a, const void * b) {
-    return (int) ( ((Task) b)->fileSize - ((Task) a)->fileSize );
+    return  (int) (((*(struct task * *) a))->fileSize) - (int) (((*(struct task * *) b))->fileSize);
 }
 
 void initiAllIterators(Load * loads, int count) {

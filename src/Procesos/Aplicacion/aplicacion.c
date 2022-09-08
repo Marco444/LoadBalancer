@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-     int slavesCount;
+    int slavesCount, debug = 1;
     Load * loads = getSlavesTasks(tasks, argc - 1, &slavesCount);
 
     initiAllIterators(loads,slavesCount); 
@@ -83,4 +83,5 @@ int main(int argc, char *argv[])
         wait(&status);
     }
  
+    return 0;
 }
