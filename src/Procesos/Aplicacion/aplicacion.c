@@ -16,7 +16,9 @@
 void clearBuff(char * toClear);
 int main(int argc, char *argv[])
 {
+
     setvbuf(stdout, NULL, _IONBF, 0);
+
     if (argc < 2) {
         printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
         exit(1);
@@ -33,45 +35,59 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     int slavesCount, filesNumber = argc - 1;
     Load * loads = getSlavesTasks(tasks, filesNumber, &slavesCount);
-
-    initiAllIterators(loads, slavesCount); 
     
     /////////////////////////////////////////////////////////////
     /// Una vez que tengo las loads comienzo el slave manager y
     ///con eso empiezo a distribuir las tasks
     /////////////////////////////////////////////////////////////
-   SlavesManager manager = createManager(slavesCount,argc-1);
+    SlavesManager manager = createManager(slavesCount, argc-1);
 
-   //Give initial tasks
-   for (int i = 0; i < manager->filesCount; i++)
-   {
+    //inicialiso los iteradores de los files dentro de cada load
+    initiAllIterators(loads, slavesCount); 
+
+   //A todos los esclavos creados les doy de su carga inicial
+   //el primer archivo
+   for (int i = 0; i < manager->filesCount; i++) {
+
+        //chequeo si tengo archivos, sino sigo
         if(!hasNextFileId(loads[i])) continue;
+
+        //la load guarda no la string en si, sino un id
+        //que viene a representar al indice en el arreglo argv
         int nextFileIdx = nextFileId(loads[i]);
         char * file = argv[nextFileIdx];    
+        
+        //por ultimo escribo al esclavo el archivo a traves
+        //del slavesManager
         writeSlave(manager,file,i);
    }
    
     char message[MAXBUFFER]={0};
     while (getDoneFile(manager) < (argc-1)) {
   
-        //Por cada elemeto que lee le envia uno a consiguiente
+        //Leo el output de un esclavo cualquiera a message
         readSlave(manager, message);
-        write(1,message,strlen(message)+1);
+
+        //lo escribo al vista lo procesado por el esclavo
+        write(STDOUT, message, strlen(message)+1);
         clearBuff(message);
+
+        //idem del for loop anterior
         if(!hasNextFileId(loads[getLastView(manager)]))continue;
-         
         int nextFileIdx = nextFileId(loads[getLastView(manager)]);
         char * file = argv[nextFileIdx];    
+
         writeSlave(manager,file,getLastView(manager));
-        //Falta cerrar los fd de los hijos y hacer los frees
+        //? Falta cerrar los fd de los hijos y hacer los frees 
     }
 
+    /////////////////////////////////////////////////////////////
+    /// Por ultimo libero la memoria alocado dinamicamente y 
+    /// espero a que terminen todos los esclavos que cree
+    ///////////////////////////////////////////////////////////// 
     freeManager(manager);
-
     destroyAllLoads(loads, filesNumber);
-
-    int status;
-    while (wait(&status) != -1);
+    for(int status; wait(&status) != -1;)
   
  
     return 0;

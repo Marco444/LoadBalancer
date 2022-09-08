@@ -14,6 +14,8 @@
 #define SHM_NAME "myShm"
 #define SEM_NAME "mySem"
 
+#define STDOUT 1
+
 /* un wrapper del malloc que chequea si fallo o no */
 void * malloc_c(size_t size);
 /* function for clear a char * */
