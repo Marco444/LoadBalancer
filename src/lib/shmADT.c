@@ -73,6 +73,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
     
     // We create the samphore
     shmAdt->sem = sem_open(sem_name, oflags, mode, 0);
+    shmAdt->nameSEM = sem_name;
 
     if(shmAdt->sem == SEM_FAILED){
         unlinkShm(shmAdt);

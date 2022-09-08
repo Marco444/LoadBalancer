@@ -25,37 +25,20 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Manejo la lectura de los archivos a un arreglo de Tasks, 
     /////////////////////////////////////////////////////////////
-    struct stat fileStats;    
     Task tasks[argc - 1];
-
-    for (int i = 1; i < argc; i++) {
-        if (stat(argv[i], &fileStats) != 0) {
-            printf("Error! : cannot access %s file\n", argv[i]);
-            exit(1);
-        }
-
-        if (S_ISDIR(fileStats.st_mode)) {
-            printf("Error! : %s is a directory\n", argv[i]);
-            exit(1);
-        }
-
-        
-        tasks[i - 1] = malloc_c(sizeof(struct task));
-        tasks[i - 1]->fileSize = fileStats.st_size;
-        tasks[i - 1]->fileId = i;
-        
-    }
+    readFilesInto(tasks, argv, argc);
 
     /////////////////////////////////////////////////////////////
-    /// Paso de las tasks a las loads para despues dispachear. 
+    /// Paso de las Tasks a las Loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-     int slavesCount;
+    int slavesCount;
     Load * loads = getSlavesTasks(tasks, argc - 1, &slavesCount);
 
-    initiAllIterators(loads,slavesCount); 
+    initiAllIterators(loads, slavesCount); 
     
     /////////////////////////////////////////////////////////////
-    /// Paso de las tasks a las loads para despues dispachear. 
+    /// Una vez que tengo las loads comienzo el slave manager y
+    ///con eso empiezo a distribuir las tasks
     /////////////////////////////////////////////////////////////
    SlavesManager manager = createManager(slavesCount,argc-1);
    for (int i = 0; i < manager->filesCount; i++)
@@ -89,6 +72,7 @@ int main(int argc, char *argv[])
         wait(&status);
     }
  
+    return 0;
 }
 void clearBuff(char * toClear){
     for (int i = 0; toClear[i] != 0; i++)
