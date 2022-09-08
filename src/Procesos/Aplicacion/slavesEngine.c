@@ -39,7 +39,7 @@ slaves *createSlaves(int slaveCount)
 
         if (pipe(channelA) == -1 || pipe(channelB) == -1)
         {
-            secureFreeSlave(slavesPipes);
+            secureFreeSlave(slavesPipes,i);
             perror("Creation pipe error");
             exit(1);
         }
@@ -70,8 +70,26 @@ slaves *createSlaves(int slaveCount)
     }
     return slavesPipes;
 }
-void secureFreeSlave(slaves *freeElement)
+SlavesManager createManager(int slavesCount, int totalTask){
+    fd_set * fdSet =malloc_c(sizeof(fd_set));
+    FD_ZERO(fdSet);
+    SlavesManager manager = malloc(sizeof(struct slaveManager));
+    manager->fdset = fdSet;
+    manager->filesCount = totalTask;
+    manager->filesDone = 0;
+    manager ->inSet = 0;
+    manager ->lastView = 0;
+    manager ->pipes = createSlaves(slavesCount);
+    manager->slaveCount = slavesCount;
+    return manager;    
+
+}
+void secureFreeSlave(slaves *freeElement,int cant)
 {
+    for(int i = 0; i < cant;i++){
+        close(freeElement->readFD[i]);
+        close(freeElement->writeFD[i]);
+    }
     free(freeElement->readFD);
     free(freeElement->writeFD);
     free(freeElement);

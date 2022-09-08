@@ -1,10 +1,10 @@
 
 #include "../../include/esclavo.h"
-
+void clearBuff(char * toClear);
 int main(int argC, char *argV[])
 {
      setvbuf(stdout, NULL, _IONBF, 0);
-    char ptr[MAXBUFFER];
+    char ptr[MAXBUFFER]={0};
     // Le voy calculando todos los md5 a los archivos iniciales
     // cuando termino con ellos pido mas
     for (int i = 0; i < (argC - 1); i++)
@@ -17,8 +17,10 @@ int main(int argC, char *argV[])
     size_t size = 0;
     // Si es null quiere decir que se cerro el pipe
     while (getline(&actFile,&size,stdin) != -1)
-    {       
+    {     
+        clearBuff(ptr);
         md5Calculate(ptr,actFile);
+        clearBuff(actFile);
         printf("%s \n",ptr);
         
     }
@@ -54,4 +56,11 @@ void md5Calculate(char *buffer,char * file)
         read(fd[0], buffer + strlen(buffer), MAXBUFFER);    // leo lo que me deja el hijo
         close(fd[0]);
     }
+}
+void clearBuff(char * toClear){
+    for (int i = 0; toClear[i] != 0; i++)
+    {
+        toClear[i]=0;
+    }
+    
 }

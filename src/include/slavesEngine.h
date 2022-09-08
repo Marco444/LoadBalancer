@@ -27,10 +27,26 @@
 // Lo mismo puede pensarse en usar lo de la longitud de los nombres de los archivos
 ///////////////////////////////////////////////////////////////////////////
 #include "lib.h"
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
 typedef struct slaves{
     int * readFD;
     int * writeFD;
 } slaves;
+typedef  struct slaveManager {
+    slaves * pipes;
+    int filesCount;
+    int filesDone;
+    int slaveCount;
+    int lastView;
+    fd_set * fdset;
+    int inSet; 
+} * SlavesManager;
 /*
     Funcion la cual crea a un hijo con sus respectivos pipes
     @params: file -> aplicacion a la cual le hara el execv
@@ -49,6 +65,7 @@ slaves * createSlaves(int slaveCount);
     Funcion la cual se encarga de hacer un free de la estructura slaves
     @params: freeElemet -> elemento al cual le queremos hacer un free
 */
-void secureFreeSlave(slaves * freeElement);
+void secureFreeSlave(slaves *freeElement,int cant);
 
+SlavesManager createManager(int slavesCount, int totalTask);
 #endif

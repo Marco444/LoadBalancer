@@ -6,17 +6,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include "../../include/loadDispatcher.h"
 #include "../../include/slavesEngine.h"
+#include "../../include/loadDispatcher.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "../../include/loadBalancer.h"
 #include "../../include/lib.h"
 #include <sys/select.h>
-
+void clearBuff(char * toClear);
 int main(int argc, char *argv[])
 {
-
+    setvbuf(stdout, NULL, _IONBF, 0);
     if (argc < 2) {
         printf("Usage: ./md5 <file1> <file2> ... <fileN>\n");
         exit(1);
@@ -57,30 +57,43 @@ int main(int argc, char *argv[])
     /////////////////////////////////////////////////////////////
     /// Paso de las tasks a las loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
-    fd_set fdSet = {}; // Preguntar si esto es necesario
-    FD_ZERO(&fdSet);
-    struct SlaveManager manager = {.slaveCount = slavesCount, .pipes = createSlaves(slavesCount), .fdset = fdSet,.filesCount =  argc - 1, .filesDone = 0, .inSet = 0};
-    
-    char message[MAXBUFFER];
-    while (manager.filesDone < manager.filesCount) {
-  
-        if(!hasNextFileId(loads[manager.lastView])) continue;
-        int nextFileIdx = nextFileId(loads[manager.lastView]);
+   SlavesManager manager = createManager(slavesCount,argc-1);
+   for (int i = 0; i < manager->filesCount; i++)
+   {
+        if(!hasNextFileId(loads[i])) continue;
+        int nextFileIdx = nextFileId(loads[i]);
         char * file = argv[nextFileIdx];    
-        writeSlave(&manager,file,manager.lastView);
+        writeSlave(manager,file,i);
+   }
+   
+    char message[MAXBUFFER]={0};
+    while (manager ->filesDone < manager->filesCount) {
+  
         //Por cada elemeto que lee le envia uno a consiguiente
-        readSlave(&manager, message);
-        puts(message);
-        manager.filesDone += 1;
+        readSlave(manager, message);
+        write(1,message,strlen(message)+1);
+        clearBuff(message);
+        if(!hasNextFileId(loads[manager->lastView]))continue;
+         
+        int nextFileIdx = nextFileId(loads[manager->lastView]);
+        char * file = argv[nextFileIdx];    
+        writeSlave(manager,file,manager->lastView);
         //Falta cerrar los fd de los hijos y hacer los frees
     }
-
+    secureFreeSlave(manager->pipes,manager->slaveCount);
     destroyAllLoads(loads,slavesCount);
 
     int status;
-    for (int i = 0; i < manager.slaveCount; i++)
+    for (int i = 0; i < manager->slaveCount; i++)
     {
         wait(&status);
     }
  
+}
+void clearBuff(char * toClear){
+    for (int i = 0; toClear[i] != 0; i++)
+    {
+        toClear[i]=0;
+    }
+    
 }
