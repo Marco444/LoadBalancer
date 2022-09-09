@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
     ///////////////////////////////////////////////////////////// 
     freeManager(manager);
     destroyAllLoads(loads, filesNumber);
-    for(int status; wait(&status) != -1;)
+    for(int status; wait(&status) != -1;);
   
     
     closeSHM(shm);

@@ -139,10 +139,10 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
 
 void closeSHM(shmADT shmAdt){
-    if(NULL == shmAdt)
+    if(shmAdt == NULL)
         perror("Invalid parameters for closeSHM");
 
-    if(-1 == munmap(shmAdt->address, shmAdt->sizeSHM)){
+    if(munmap(shmAdt->address, shmAdt->sizeSHM) == -1){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
@@ -150,7 +150,7 @@ void closeSHM(shmADT shmAdt){
         exit(errno);
     }
     
-    if(-1 == sem_close(shmAdt->sem)){
+    if(sem_close(shmAdt->sem) == -1){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
@@ -232,7 +232,7 @@ static void unlinkSem(shmADT shmAdt){
 
 
 static void unlinkShm(shmADT shmAdt){
-    if(shm_unlink(shmAdt->nameSHM)){
+    if(shm_unlink(shmAdt->nameSHM) == -1){
         perror("Error unlinking Shared Memory");
         exit(errno);
     }
