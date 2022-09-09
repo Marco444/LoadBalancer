@@ -181,8 +181,10 @@ void writeSHM(shmADT shmAdt, char * buffer){
 
     for(int i = 0; buffer[i] != '\n'; i++, (shmAdt->writePos)++){
         
-        if(shmAdt->writePos >= shmAdt->sizeSHM)
+        if(shmAdt->writePos >= shmAdt->sizeSHM){
             perror("Error Shared Memory capacity exceded");
+            return;
+            }
         
 
         (shmAdt->address)[shmAdt->writePos] = buffer[i];
@@ -214,6 +216,7 @@ void readSHM(shmADT shmAdt, char * buffer){
         unlinkSem(shmAdt);
         unlinkShm(shmAdt);
         free(shmAdt);
+        exit(errno);
     }
 
     int i = 0;
