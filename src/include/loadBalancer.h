@@ -29,7 +29,10 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
-#define MAX_SLAVES 30
+#define MAX_SLAVES 50
+//Buscamos el limite del proceso pero ulimit -u me da: unlimited resources
+//por lo tanto seteamos a 50 como una buena aproximacion del maximo numero
+//de procesos. 
 
 #define OVERLOADING_FACTOR 1
 
@@ -60,7 +63,7 @@ typedef struct load {
  * y el numero de archivos a procesar. Devuelve un arreglo donde cada indice corresponde a un
  * esclavo diferente y mantiene los fileIds que tienen que procesar el esclavo.
  * */
-Load * getSlavesTasks(Task * tasks, int count, int * loadsCount);
+Load * getSlavesLoads(Task * tasks, int count, int * loadsCount);
 
 void reBalanceLoads(Load * loads, int loadNumber);
 

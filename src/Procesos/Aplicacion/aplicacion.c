@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     /// Paso de las Tasks a las Loads para despues dispachear. 
     /////////////////////////////////////////////////////////////
     int slavesCount, filesNumber = argc - 1;
-    Load * loads = getSlavesTasks(tasks, filesNumber, &slavesCount);
+    Load * loads = getSlavesLoads(tasks, filesNumber, &slavesCount);
     
     /////////////////////////////////////////////////////////////
     //  Abrimos un espacio de memoria compartida (SHM).

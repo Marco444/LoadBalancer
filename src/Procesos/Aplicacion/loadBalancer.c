@@ -18,15 +18,41 @@ Load * createLoads(int loadsCount) {
     return loads;
 }
 
+int cmpLoad(const void * a, const void * b) {
+    return  (int) (((*(struct load * *) a))->fileCount) - (int) (((*(struct load * *) b))->fileCount);
+}
+
+//TODO: testearlo
 void reBalanceLoads(Load * loads, int loadNumber) {
 
     //ordeno los elementos por orden ASCENDENTE en el numero de
-    //archivos, es decir mantengo 
-    //qsort(loads, loadNumber, sizeof(struct task *), cmpLoad);
+    //archivos. (Para ver la justificacion completa ver el informe,
+    //pero la idea es que los archivos que mas importa distribuir 
+    //bien son los mas pesados, es decir las tasks que tienen 
+    //menor numero de archivos no se deberian tocar)/
+    qsort(loads, loadNumber, sizeof(struct task *), cmpLoad);
 
+    //indice para mantener la load donde estoy cargando 
+    int idx = 0;
 
+    for (size_t i = MAX_SLAVES - 1; i < loadNumber; i++) {
 
-    return;
+        //empiezo a iterar por la load que hay que redistribuir
+        initIterator(loads[i]);
+
+        //copio todos los archivos de la load que tengo que redistribuir
+        //a las loads que puedo dispatchear.
+        while(hasNextFileId(loads[i])) {
+
+            //paso la task de la load que no puedo generarle un esclavo a otra
+            addFileId(loads[idx], nextFileId(loads[i])); 
+
+            //me muevo a la siguiente load a donde puedo agregarle otra task.
+            if(idx == MAX_SLAVES) idx = 0;
+            else idx++;
+        }
+    }
+
 }
 
 void readFilesInto(Task * tasks, char * argv[], int argc) {
