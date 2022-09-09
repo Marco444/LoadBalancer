@@ -85,7 +85,6 @@ int main(int argc, char *argv[])
         char * file = argv[nextFileIdx];    
 
         writeSlave(manager,file,getLastView(manager));
-        //? Falta cerrar los fd de los hijos y hacer los frees 
     }
 
     /////////////////////////////////////////////////////////////

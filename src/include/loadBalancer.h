@@ -29,27 +29,27 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
-#define MAX_SLAVES 50
+#define MAX_SLAVES 30
 
 #define OVERLOADING_FACTOR 1
 
 typedef int FileId;
 
-////Un node viene a ser un elemento de la lista encadenada que mantenemos para los fileIds
-////que componen a una load.
+///Un node viene a ser un elemento de la lista encadenada que mantenemos para los fileIds
+///que componen a una load.
 typedef struct nodeFileId {
     FileId val;
     struct nodeFileId * next;
 } * NodeFileId;
 
-////Una task viene a ser una tarea para nuestros esclavos, definida por el tamanio del archivo asi como
+///Una task viene a ser una tarea para nuestros esclavos, definida por el tamanio del archivo asi como
 ///el fileId del mismo para despues mapearlo al esclavo.
 typedef struct task {
     size_t fileSize;
     size_t fileId;
 } * Task;
 
-////Una load viene a ser la carga de trabajos que idealmente seria asignada a un unico esclavo,
+///Una load viene a ser la carga de trabajos que idealmente seria asignada a un unico esclavo,
 ///compuesta del tamanio que tiene y la lista de filesIds que la componen.
 typedef struct load {
     size_t size, fileCount;                   //mantiene el tamanio de la carga del esclavo de trabajo
@@ -61,6 +61,8 @@ typedef struct load {
  * esclavo diferente y mantiene los fileIds que tienen que procesar el esclavo.
  * */
 Load * getSlavesTasks(Task * tasks, int count, int * loadsCount);
+
+void reBalanceLoads(Load * loads, int loadNumber);
 
 /* recibe los argumentos con los que se llamo a main y con ellos completa las tasks que se
  tirenen que hacer */

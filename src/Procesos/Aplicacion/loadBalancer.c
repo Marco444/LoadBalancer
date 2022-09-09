@@ -18,6 +18,17 @@ Load * createLoads(int loadsCount) {
     return loads;
 }
 
+void reBalanceLoads(Load * loads, int loadNumber) {
+
+    //ordeno los elementos por orden ASCENDENTE en el numero de
+    //archivos, es decir mantengo 
+    //qsort(loads, loadNumber, sizeof(struct task *), cmpLoad);
+
+
+
+    return;
+}
+
 void readFilesInto(Task * tasks, char * argv[], int argc) {
 
     struct stat fileStats;    
@@ -41,7 +52,7 @@ void readFilesInto(Task * tasks, char * argv[], int argc) {
 }
 
 
-Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
+Load * getSlavesLoads(Task * tasks, int taskCount, int * loadsCount) {
 
     //ordeno los elementos por orden DESCENDENTE
     qsort(tasks, taskCount, sizeof(struct task *), cmpTask);
@@ -76,6 +87,11 @@ Load * getSlavesTasks(Task * tasks, int taskCount, int * loadsCount) {
 
     //destruimos la memoria alocada para tasks
     destroyTasks(tasks, taskCount);
+
+    //en el caso que no tengo suficientes esclavos para hacer uno por
+    //load, re-balanceo las loads entre estos.
+    if(loadNumber > MAX_SLAVES) 
+        reBalanceLoads(loads, loadNumber);
 
     return loads;
 }
