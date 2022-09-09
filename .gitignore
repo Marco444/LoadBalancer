@@ -3,3 +3,11 @@
 .gitignore
 src/Procesos/Aplicacion/APLICACION
 src/Procesos/Aplicacion/APLICACION
+ESCLAVO
+VISTA
+.config/PVS-Studio/30d59484437b42b
+.config/PVS-Studio/PVS-Studio.lic
+report.tasks
+strace_out
+PVS-Studio.log
+.gitignore

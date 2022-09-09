@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 //
 // Created by Marco Scilipoti on 05/09/2022.
 //
@@ -74,7 +76,7 @@ slaves *createSlaves(int slaveCount)
 SlavesManager createManager(int slavesCount, int totalTask){
     fd_set * fdSet =malloc_c(sizeof(fd_set));
     FD_ZERO(fdSet);
-    SlavesManager manager = malloc(sizeof(struct slaveManager));
+    SlavesManager manager = malloc_c(sizeof(struct slaveManager));
     manager->fdset = fdSet;
     manager->filesCount = totalTask;
     manager->filesDone = 0;

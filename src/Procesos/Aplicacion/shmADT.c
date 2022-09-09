@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <string.h>
 #include <unistd.h>
 #include <semaphore.h>
@@ -8,6 +10,7 @@
 #include <sys/fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../include/lib.h"
 
 //TODO check if there are unnecesary #include's
 
@@ -31,7 +34,7 @@ typedef struct shmCDT{
 
 shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot){
 
-    shmADT shmAdt = calloc(1, sizeof(shmCDT)); 
+    shmADT shmAdt = malloc_c(sizeof(shmCDT)); 
 
     if(shmAdt == NULL){ 
         perror("Error while initializing Shared Memory");
@@ -89,7 +92,7 @@ shmADT createSHM(const char * shm_name, const char * sem_name, int oflags, mode_
 
 shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t mode, unsigned int shmSize, int prot){
 
-    shmADT shmAdt = calloc(1, sizeof(shmCDT)); 
+    shmADT shmAdt = malloc_c(sizeof(shmCDT)); 
 
     if(shmAdt == NULL){ 
         perror("Error while initializing Shared Memory");
@@ -139,8 +142,10 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
 
 
 void closeSHM(shmADT shmAdt){
-    if(shmAdt == NULL)
+    if(shmAdt == NULL){
         perror("Invalid parameters for closeSHM");
+        exit(errno);
+    }
 
     if(munmap(shmAdt->address, shmAdt->sizeSHM) == -1){
         unlinkSem(shmAdt);
@@ -171,12 +176,14 @@ void writeSHM(shmADT shmAdt, char * buffer){
 
     if(shmAdt == NULL || buffer == NULL){
         perror("Invalid parameters for writeSHM");
+        exit(errno);
     }
 
     for(int i = 0; buffer[i] != '\n'; i++, (shmAdt->writePos)++){
         
         if(shmAdt->writePos >= shmAdt->sizeSHM)
             perror("Error Shared Memory capacity exceded");
+        
 
         (shmAdt->address)[shmAdt->writePos] = buffer[i];
     }
@@ -199,6 +206,7 @@ void readSHM(shmADT shmAdt, char * buffer){
 
     if(shmAdt == NULL || buffer == NULL){
         perror("Invalid parameters for writeSHM");
+        exit(errno);
     }
 
     //sem wait!
