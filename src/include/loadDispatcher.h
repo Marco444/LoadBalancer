@@ -21,6 +21,7 @@
     int * readFD;
     int * writeFD;
 } slaves;
+*/
 /*
     Funcion la cual crea a un hijo con sus respectivos pipes
     @params: file -> aplicacion a la cual le hara el execv
