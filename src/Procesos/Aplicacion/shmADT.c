@@ -223,11 +223,10 @@ void readSHM(shmADT shmAdt, char * buffer){
     for(; (shmAdt->address)[shmAdt->readPos] != '\n'; i++, (shmAdt->readPos)++){
         buffer[i] = (shmAdt->address)[shmAdt->readPos];
     }
-    //buffer[++i] = '\n';
     buffer[i++] = '\n';
     buffer[i++] = '\0';
     (shmAdt->readPos)++;
-    //(shmAdt->readPos)++;
+
 }
 
 

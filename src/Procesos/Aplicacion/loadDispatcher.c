@@ -12,6 +12,7 @@
 int next(fd_set *fdset, int lastView, int *readFd, int count);
 void setFDS(int *fds, fd_set *fdset, int count);
 
+
 void readSlave(SlavesManager  manager, char *buffer)
 {
 
@@ -36,8 +37,10 @@ void readSlave(SlavesManager  manager, char *buffer)
 void writeSlave(SlavesManager manager, char *file, int slaveNum)
 
 {
-    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)+1) == -1)
+    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)+1) == -1){
         perror("writting error");
+        exit(0);
+    }
     write(manager->pipes->writeFD[slaveNum], "\n", 1);
 }
 

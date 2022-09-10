@@ -6,7 +6,6 @@
 
 #include "../../include/loadBalancer.h"
 #include "../../include/lib.h"
-#include <unistd.h>
 
 Load * createLoads(int loadsCount) {
 
@@ -57,15 +56,27 @@ void reBalanceLoads(Load * loads, int loadNumber) {
 
 }
 
-void readFilesInto(Task * tasks, char ** files, char * argv[], int argc) {
+void readFilesInto(Task * tasks, char ** files, char * argv[], int argc, int * fileCount) {
 
     struct stat fileStats;    
 
+    int idx = 0;
+
     for (int i = 1; i < argc; i++) {
         tasks[i - 1] = malloc_c(sizeof(struct task));
-        tasks[i - 1]->fileSize = fileStats.st_size;
+
+        //si es directorio o no se puede abrir tomo que no tiene tamanio
+        if((stat(argv[i], &fileStats) != 0 || S_ISDIR(fileStats.st_mode)))
+            tasks[i - 1]->fileSize = 0;
+        else {
+            tasks[i - 1]->fileSize = fileStats.st_size;
+           // files[idx++] = argv[i];
+        }
+
         tasks[i - 1]->fileId = i; 
     }
+
+    *fileCount = idx;
 }
 
 

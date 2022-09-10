@@ -33,7 +33,8 @@ int main(int argc, char *argv[]) {
     /////////////////////////////////////////////////////////////
     Task tasks[argc - 1];
     char * files[argc - 1];
-    readFilesInto(tasks, files, argv, argc);
+    int count = 0;
+    readFilesInto(tasks, files, argv, argc, &count);
 
     /////////////////////////////////////////////////////////////
     /// Paso de las Tasks a las Loads para despues dispachear. 
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
   
         //Leo el output de un esclavo cualquiera a message
         readSlave(manager, message);
-        //write(1,message,strlen(message)+1);
+       // puts(message);
         writeSHM(shm, message);
         clearBuff(message);
 
@@ -86,7 +87,6 @@ int main(int argc, char *argv[]) {
         if(!hasNextFileId(loads[getLastView(manager)]))continue;
         int nextFileIdx = nextFileId(loads[getLastView(manager)]);
         char * file = argv[nextFileIdx];    
-        
         writeSlave(manager,file,getLastView(manager));
     }
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     for(int status; wait(&status) != -1;);
   
     
-    closeSHM(shm);
+    //closeSHM(shm);
     
     return 0;
 }

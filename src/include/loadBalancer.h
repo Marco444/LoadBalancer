@@ -27,7 +27,9 @@
  * */
 
 
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <stdlib.h>
 
 #define MAX_SLAVES 50
@@ -75,7 +77,7 @@ void reBalanceLoads(Load * loads, int loadNumber);
 
 /* recibe los argumentos con los que se llamo a main y con ellos completa las tasks que se
  tirenen que hacer */
-void readFilesInto(Task * tasks, char ** files, char * argv[], int argc);
+void readFilesInto(Task * tasks, char ** files, char * argv[], int argc, int * filesCount);
 
 /* adds the task in question to the load */
 void appendTask(Load load, Task task);

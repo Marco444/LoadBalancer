@@ -16,7 +16,7 @@ int main(int argC, char *argV[])
         clearBuff(ptr);
         md5Calculate(ptr,actFile);
         clearBuff(actFile);
-        puts(ptr);
+        printf(ptr);
         
     }
     return 0;
@@ -38,6 +38,6 @@ void md5Calculate(char *buffer,char * file)
     FILE * outPut = popen(command,"r");
     sprintf(buffer, "%ld ", (long)getpid());            // Concateno
     fgets( (buffer + strlen(buffer)),MAXBUFFER,outPut);    // leo lo que me deja el hijo
-   
+    pclose(outPut);
 }
 
