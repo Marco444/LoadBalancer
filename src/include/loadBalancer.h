@@ -30,7 +30,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
-#define MAX_SLAVES 10
+#define MAX_SLAVES 50
 //Buscamos el limite del proceso pero ulimit -u me da: unlimited resources
 //por lo tanto seteamos a 50 como una buena aproximacion del maximo numero
 //de procesos. (Luego de investigar un poco mas entendimos como en terminos
