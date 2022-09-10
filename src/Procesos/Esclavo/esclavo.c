@@ -8,14 +8,6 @@ int main(int argC, char *argV[])
 {
     setvbuf(stdout, NULL, _IONBF, 0);
     char ptr[MAXBUFFER]={0};
-    // Le voy calculando todos los md5 a los archivos iniciales
-    // cuando termino con ellos pido mas
-    for (int i = 0; i < (argC - 1); i++)
-    {
-        md5Calculate(ptr,argV[i+1]);
-        printf(ptr);
-        
-    }
     char * actFile = NULL;
     size_t size = 0;
     // Si es null quiere decir que se cerro el pipe
@@ -24,7 +16,7 @@ int main(int argC, char *argV[])
         clearBuff(ptr);
         md5Calculate(ptr,actFile);
         clearBuff(actFile);
-        printf("%s",ptr);
+        puts(ptr);
         
     }
     return 0;
@@ -36,9 +28,12 @@ void md5Calculate(char *buffer,char * file)
     int childPid;
     int status;
     char command[MAXBUFFER];
-    if (pipe(fd) < 0)
+    if (pipe(fd) < 0){
         perror("Error to calculate md5");
-
+        close(fd[0]);
+        close(fd[1]);
+        exit(1);
+        }
     // Esto se puede cambiar por un popen 
     if ((childPid = fork()) == 0)
     {
@@ -51,8 +46,12 @@ void md5Calculate(char *buffer,char * file)
     }
     else
     {
-        if (childPid == -1)
+        if (childPid == -1){
             perror("Fork error in md5");
+            close(fd[0]);
+            close(fd[1]);
+            exit(1);
+        }
         close(fd[1]);   // Padre solo lee
         waitpid(childPid, &status, WUNTRACED | WCONTINUED); // Espero a la respuesta del hijo 
         sprintf(buffer, "%ld ", (long)getpid());            // Concateno
