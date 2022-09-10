@@ -6,6 +6,7 @@
 
 #include "../../include/loadBalancer.h"
 #include "../../include/lib.h"
+#include <unistd.h>
 
 Load * createLoads(int loadsCount) {
 
@@ -24,7 +25,6 @@ int cmpLoad(const void * a, const void * b) {
     return  (int) (((*(struct load * *) a))->fileCount) - (int) (((*(struct load * *) b))->fileCount);
 }
 
-//TODO: testearlo
 void reBalanceLoads(Load * loads, int loadNumber) {
 
     //ordeno los elementos por orden ASCENDENTE en el numero de
@@ -57,22 +57,11 @@ void reBalanceLoads(Load * loads, int loadNumber) {
 
 }
 
-void readFilesInto(Task * tasks, char * argv[], int argc) {
+void readFilesInto(Task * tasks, char ** files, char * argv[], int argc) {
 
     struct stat fileStats;    
 
     for (int i = 1; i < argc; i++) {
-        if (stat(argv[i], &fileStats) != 0) {
-            printf("Error! : cannot access %s file\n", argv[i]);
-            exit(1);
-        }
-
-        if (S_ISDIR(fileStats.st_mode)) {
-            printf("Error! : %s is a directory\n", argv[i]);
-            exit(1);
-        }
-
-        
         tasks[i - 1] = malloc_c(sizeof(struct task));
         tasks[i - 1]->fileSize = fileStats.st_size;
         tasks[i - 1]->fileId = i; 
@@ -118,8 +107,10 @@ Load * getSlavesLoads(Task * tasks, int taskCount, int * loadsCount) {
 
     //en el caso que no tengo suficientes esclavos para hacer uno por
     //load, re-balanceo las loads entre estos.
-    if(loadNumber > MAX_SLAVES) 
+    if(loadNumber > MAX_SLAVES) { 
         reBalanceLoads(loads, loadNumber);
+        *loadsCount = MAX_SLAVES;
+    }
 
     return loads;
 }

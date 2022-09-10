@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
     /// Manejo la lectura de los archivos a un arreglo de Tasks, 
     /////////////////////////////////////////////////////////////
     Task tasks[argc - 1];
-    readFilesInto(tasks, argv, argc);
+    char * files[argc - 1];
+    readFilesInto(tasks, files, argv, argc);
 
     /////////////////////////////////////////////////////////////
     /// Paso de las Tasks a las Loads para despues dispachear. 
