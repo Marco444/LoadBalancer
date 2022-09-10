@@ -23,6 +23,7 @@
  * Luego procedimos a expandir sobre esto y no solamente definir el numero de esclavos que tiene que haber, pero
  * tambien los archivos que deberian procesar a medida que van terminando los batches que van haciendo.
  *
+ * Por ultimo, implementamos un metodo 
  * */
 
 
@@ -32,9 +33,14 @@
 #define MAX_SLAVES 50
 //Buscamos el limite del proceso pero ulimit -u me da: unlimited resources
 //por lo tanto seteamos a 50 como una buena aproximacion del maximo numero
-//de procesos. 
+//de procesos. (Luego de investigar un poco mas entendimos como en terminos
+//generales la cantidad de forks esta limitada por la memoria del sistema,
+//tomamos 50 como una aproximacion para la mayoria de maquinas modernas) 
 
-#define OVERLOADING_FACTOR 1
+#define OVERLOADING_FACTOR 3
+//Este factor viene a definir cuanto veces mas puede pesar una Load (sin rebalancear)
+//que el archivo mas pesado. Es una opcion que puede permitir optimizar el codigo, 
+//a partir de los tamnios que recibe el programa y el tiempo que toma hacer un esclavo mas.
 
 typedef int FileId;
 
@@ -69,7 +75,7 @@ void reBalanceLoads(Load * loads, int loadNumber);
 
 /* recibe los argumentos con los que se llamo a main y con ellos completa las tasks que se
  tirenen que hacer */
-void readFilesInto(Task * tasks, char * argv[], int argc);
+void readFilesInto(Task * tasks, char ** files, char * argv[], int argc);
 
 /* adds the task in question to the load */
 void appendTask(Load load, Task task);
@@ -99,10 +105,10 @@ void initIterator(Load load);
 /* comparador para ordenar taks en orden DESCENDENTE */
 int cmpTask (const void * a, const void * b);
 
-
+/* comienza todos los iteradores de un grupo de loads */
 void initiAllIterators(Load * loads, int count);
 
-
+/* destruye toda informacion alocada dinamicamente a las Loads */
 void destroyAllLoads(Load * loads, int count);
 
 #endif //TEST_LOADBALANCER_H

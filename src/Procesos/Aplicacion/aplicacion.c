@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <stdio.h>
 #include <fcntl.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -17,9 +16,10 @@
 #include "../../include/shmADT.h"
 #include <sys/mman.h>
 #include <sys/select.h>
+
 void clearBuff(char * toClear);
-int main(int argc, char *argv[])
-{
+
+int main(int argc, char *argv[]) {
 
     setvbuf(stdout, NULL, _IONBF, 0);
 
@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
     /// Manejo la lectura de los archivos a un arreglo de Tasks, 
     /////////////////////////////////////////////////////////////
     Task tasks[argc - 1];
-    readFilesInto(tasks, argv, argc);
+    char * files[argc - 1];
+    readFilesInto(tasks, files, argv, argc);
 
     /////////////////////////////////////////////////////////////
     /// Paso de las Tasks a las Loads para despues dispachear. 
