@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
    //A todos los esclavos creados les doy de su carga inicial
    //el primer archivo
-   for (int i = 0; i < manager->filesCount; i++) {
+   for (int i = 0; i < (argc - 1); i++) {
 
         //chequeo si tengo archivos, sino sigo
         if(!hasNextFileId(loads[i])) continue;
