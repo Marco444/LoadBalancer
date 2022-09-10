@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
         //que viene a representar al indice en el arreglo argv
         int nextFileIdx = nextFileId(loads[i]);
         char * file = argv[nextFileIdx];    
-        
+       
         //por ultimo escribo al esclavo el archivo a traves
         //del slavesManager
         writeSlave(manager,file,i);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
         if(!hasNextFileId(loads[getLastView(manager)]))continue;
         int nextFileIdx = nextFileId(loads[getLastView(manager)]);
         char * file = argv[nextFileIdx];    
-
+        
         writeSlave(manager,file,getLastView(manager));
     }
 

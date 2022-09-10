@@ -23,40 +23,21 @@ int main(int argC, char *argV[])
 }
 
 void md5Calculate(char *buffer,char * file)
-{
-    int fd[2];
-    int childPid;
-    int status;
+{       struct stat fileStats;    
+
+       if (stat(file, &fileStats) != 0) {
+            sprintf(buffer,"Error! : cannot access %s file\n", file);
+            return;
+        }else if(S_ISDIR(fileStats.st_mode)){
+             sprintf(buffer,"Error! : Is a directory %s\n", file);
+             return;
+        }
+
     char command[MAXBUFFER];
-    if (pipe(fd) < 0){
-        perror("Error to calculate md5");
-        close(fd[0]);
-        close(fd[1]);
-        exit(1);
-        }
-    // Esto se puede cambiar por un popen 
-    if ((childPid = fork()) == 0)
-    {
-        close(fd[0]);
-        close(1);
-        dup2(fd[1], 1);
-        close(fd[1]);
-        sprintf(command,"%s %s","md5sum",file);
-        execl("/bin/sh", "sh", "-c", command , (char *)0);
-    }
-    else
-    {
-        if (childPid == -1){
-            perror("Fork error in md5");
-            close(fd[0]);
-            close(fd[1]);
-            exit(1);
-        }
-        close(fd[1]);   // Padre solo lee
-        waitpid(childPid, &status, WUNTRACED | WCONTINUED); // Espero a la respuesta del hijo 
-        sprintf(buffer, "%ld ", (long)getpid());            // Concateno
-        read(fd[0], buffer + strlen(buffer), MAXBUFFER);    // leo lo que me deja el hijo
-        close(fd[0]);
-    }
+    sprintf(command,"%s %s","md5sum",file);
+    FILE * outPut = popen(command,"r");
+    sprintf(buffer, "%ld ", (long)getpid());            // Concateno
+    fgets( (buffer + strlen(buffer)),MAXBUFFER,outPut);    // leo lo que me deja el hijo
+   
 }
 

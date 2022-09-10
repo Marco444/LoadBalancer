@@ -67,11 +67,6 @@ void readFilesInto(Task * tasks, char * argv[], int argc) {
             exit(1);
         }
 
-        if (S_ISDIR(fileStats.st_mode)) {
-            printf("Error! : %s is a directory\n", argv[i]);
-            exit(1);
-        }
-
         
         tasks[i - 1] = malloc_c(sizeof(struct task));
         tasks[i - 1]->fileSize = fileStats.st_size;
