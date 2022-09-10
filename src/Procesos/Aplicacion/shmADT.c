@@ -95,7 +95,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
     shmADT shmAdt = malloc_c(sizeof(shmCDT)); 
 
     if(shmAdt == NULL){ 
-        perror("Error while initializing Shared Memory");
+        perror("Error while initializing Shared Memory (1)");
         exit(errno);
     }
 
@@ -105,7 +105,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
     int shm_fd = shm_open(shm_name, oflags, mode);
 
     if(shm_fd == -1){
-        perror("Error while initializing Shared Memory");    
+        perror("Error while initializing Shared Memory (2)");    
         exit(errno);
     }
 
@@ -114,7 +114,7 @@ shmADT openSHM(const char * shm_name, const char * sem_name, int oflags, mode_t 
     shmAdt->writePos = 0;
 
     if(shmAdt->address == MAP_FAILED){
-        perror("Error while initializing Shared Memory");
+        perror("Error while initializing Shared Memory (3)");
         exit(errno);
     }
 

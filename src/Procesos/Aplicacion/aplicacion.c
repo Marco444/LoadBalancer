@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
     //  Abrimos un espacio de memoria compartida (SHM).
     /////////////////////////////////////////////////////////////
     shmADT shm = createSHM(SHM_NAME, SEM_NAME, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR, MAXBUFFER * (argc - 1), PROT_WRITE);
-    printf("%d", argc - 1);
-    sleep(10);
+    printf("%d\n", argc - 1);
+    sleep(2);
     /////////////////////////////////////////////////////////////
     /// Una vez que tengo las loads comienzo el slave manager y
     ///con eso empiezo a distribuir las tasks

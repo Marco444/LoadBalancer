@@ -15,7 +15,6 @@ int main(int argc, char * argv[]){
     }
 
     unsigned int size = MAXBUFFER * filesCant;
-
     shmADT shm = openSHM(SHM_NAME, SEM_NAME, O_RDWR, 0, size, PROT_READ);
 
     char buffer[MAXBUFFER];
