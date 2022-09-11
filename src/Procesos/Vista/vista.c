@@ -43,7 +43,7 @@ int main(int argc, char * argv[]){
         // We read the Shared Memory via the ADT
         readSHM(shm, buffer);
         // We print the output
-        printf(buffer);
+        printf("%s", buffer);
     }
 
     // We close al the Shared Memory resources via the ADT

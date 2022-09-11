@@ -16,8 +16,7 @@ int main(int argC, char *argV[])
         clearBuff(ptr);
         md5Calculate(ptr,actFile);
         clearBuff(actFile);
-        printf(ptr);
-        
+        printf("%s", ptr);  
     }
     return 0;
 }
@@ -29,7 +28,7 @@ void md5Calculate(char *buffer,char * file)
             sprintf(buffer,"Error! : cannot access %s file\n", file);
             return;
         }else if(S_ISDIR(fileStats.st_mode)){
-             sprintf(buffer,"Error! : Is a directory %s\n", file);
+             sprintf(buffer,"%ld  Is a directory %s\n", (long)getpid(),file);
              return;
         }
 

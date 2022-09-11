@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     for(int status; wait(&status) != -1;);
   
     
-    //closeSHM(shm);
+    closeSHM(shm);
     
     return 0;
 }

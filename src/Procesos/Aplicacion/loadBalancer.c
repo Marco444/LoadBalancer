@@ -15,6 +15,8 @@ Load * createLoads(int loadsCount) {
         loads[i] = malloc_c(sizeof(struct load));
         loads[i]->fileCount = 0;
         loads[i]->size = 0;
+        loads[i]->first = NULL;
+        loads[i]->current = NULL;
     }
 
     return loads;
