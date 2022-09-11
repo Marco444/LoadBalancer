@@ -66,9 +66,23 @@ slaves * createSlaves(int slaveCount);
     @params: freeElemet -> elemento al cual le queremos hacer un free
 */
 void secureFreeSlave(slaves *freeElement,int cant);
-
+/*
+    Fucion la cual crea el manager el cual manejara a todos los slaves
+    @paramas: int slavesCount -> cantiad de esclavos que queres crear
+                int totalTask -> total de los archivos a procesar
+*/
 SlavesManager createManager(int slavesCount, int totalTask);
+/*
+    Funcion la cual se encarga de liberar toda la memoria utilizada por los esclavos
+    y cerrar los fds
+*/
 void freeManager(SlavesManager toFree);
+/*
+    Funcion la cual se encarga de devuelve la cantidad de files hechas
+*/
 int getDoneFile(SlavesManager manager);
+/*
+    Funcion la cual devuelve el ultimo archivo visto
+*/
 int getLastView(SlavesManager manager);
 #endif

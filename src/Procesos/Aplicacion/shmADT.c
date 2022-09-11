@@ -11,9 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../include/lib.h"
-
-//TODO check if there are unnecesary #include's
-
 #include "../../include/shmADT.h"
 
 static void unlinkSem(shmADT shmAdt);
@@ -192,7 +189,6 @@ void writeSHM(shmADT shmAdt, char * buffer){
 
     (shmAdt->address)[(shmAdt->writePos)++] = '\n';
 
-//    (shmAdt->address)[(shmAdt->writePos)] = '\0';
 
     // sem post!
     if(sem_post(shmAdt->sem) == -1){

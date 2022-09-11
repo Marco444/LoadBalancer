@@ -19,6 +19,7 @@ void readSlave(SlavesManager  manager, char *buffer)
     if (manager->inSet == 0)
     {
         setFDS(manager->pipes->readFD, manager->fdset, manager->slaveCount);
+        // Pongo en el select la ultima posicion del array es decir el mas grande
         if ((manager->inSet = select(manager->pipes->readFD[manager->slaveCount-1] +1,manager->fdset, NULL, NULL, NULL)) == -1){
             perror("Error in select");
             exit(1);
@@ -31,17 +32,16 @@ void readSlave(SlavesManager  manager, char *buffer)
     manager->lastView = index;
     FD_CLR(manager->pipes->readFD[manager->lastView],manager->fdset);
     read(manager->pipes->readFD[index], buffer, MAXBUFFER);
-    manager->filesDone+=1;
+    manager->filesDone += 1;
 }
 
 void writeSlave(SlavesManager manager, char *file, int slaveNum)
 
 {
-    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)+1) == -1){
+    if (write(manager->pipes->writeFD[slaveNum], file, strlen(file)+1) == -1 ||  write(manager->pipes->writeFD[slaveNum], "\n", 1) == -1){
         perror("writting error");
         exit(0);
     }
-    write(manager->pipes->writeFD[slaveNum], "\n", 1);
 }
 
 int next(fd_set *fdset, int lastView, int *readFd, int count)

@@ -27,7 +27,6 @@ void createChild(char *file, int read_addr, int write_addr)
 
 slaves *createSlaves(int slaveCount)
 {
-    // TODO habria que ver si se podria cambiar de lugar esto asi no creo inecesariamente con malloc
     slaves *slavesPipes = malloc_c(sizeof(slaves));
     slavesPipes->readFD = malloc_c(sizeof(int) * slaveCount);
     slavesPipes->writeFD = malloc_c(sizeof(int) * slaveCount);

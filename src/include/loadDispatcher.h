@@ -17,11 +17,6 @@
  typedef SlavesManager * slaveManager ;
 
 
-/*typedef struct slaves{
-    int * readFD;
-    int * writeFD;
-} slaves;
-*/
 /*
     Funcion la cual crea a un hijo con sus respectivos pipes
     @params: file -> aplicacion a la cual le hara el execv
@@ -42,7 +37,6 @@ slaves * createSlaves(int slaveCount);
 */
 void secureFreeSlave(slaves *freeElement,int cant);
 
-SlavesManager createManager(int slavesCount, int totalTask);
 /*
     Funcion la cual te va a devolver el procesamiento de algun archivo si es que hay alguno
     @params: manager-> estructura que tiene la informacion sobre los fd y todo.
@@ -50,6 +44,12 @@ SlavesManager createManager(int slavesCount, int totalTask);
 
 */
 void readSlave(SlavesManager manager,char * buffer);
+/*
+    Funcion la cual nos permite mandarle a un esclavo el archivo que debe procesar
+    @params: Manager
+            file -> archivo que debe procesar
+            slaveNum -> en que esclavo se debe pasarle el archivo
+*/
 void writeSlave(SlavesManager manager, char *file, int slaveNum);
 
 #endif
