@@ -25,7 +25,7 @@ void createChild(char *file, int read_addr, int write_addr)
     execv(file, (char **){NULL});
 }
 
-slaves *createSlaves(int slaveCount)
+slaves * createSlaves(int slaveCount)
 {
     slaves *slavesPipes = malloc_c(sizeof(slaves));
     slavesPipes->readFD = malloc_c(sizeof(int) * slaveCount);
